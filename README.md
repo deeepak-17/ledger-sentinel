@@ -230,6 +230,21 @@ case in the taxonomy involves fee arithmetic and the system can never demonstrat
 a clean match. It is a modelling choice, it is wrong against the pricing page,
 and it is better to say so here than to let a reader discover it.
 
+## Secrets
+
+One step in this project needs an API key — recording the response cache. Copy
+`.env.example` to `.env` and fill it in; everything else runs offline against
+what that produced.
+
+`.env`, every `.env.*` variant, `*.key`, `*.pem` and `credentials.json` are
+ignored. The ignore rules are not the guard, though — they only help when a file
+is named the way you expected, and they do nothing about a key pasted into a
+source file. `tests/test_no_secrets.py` scans every **tracked** file for
+credential-shaped strings and runs as its own CI step ahead of lint, so a leak is
+the first line of the log rather than something buried in a test summary. It also
+asserts that exactly one module reads the key, and that the committed cache holds
+only messages and token counts.
+
 ## Scope
 
 **In:** one merchant · three sources · one settlement cycle · an 11-case taxonomy

@@ -11,10 +11,23 @@ htmlcov/
 ledger.db
 ledger.db-journal
 
-# Secrets. The classifier reads OPENAI_API_KEY from here when it is present;
-# it must never reach the repository.
+# Secrets. The classifier reads OPENAI_API_KEY from .env when it is present.
+# Nothing here may ever reach the repository.
+#
+# Ignoring `.env` alone is not enough -- `.env.local`, `.env.production` and a
+# stray `key.pem` are the ones that actually get committed by accident. The
+# real guard is tests/test_no_secrets.py, which scans every TRACKED file for
+# key-shaped strings: an ignore rule only helps when the file is named the way
+# you expected, and it does nothing at all about a key pasted into config.py.
 .env
+.env.*
+!.env.example
 *.key
+*.pem
+*.p12
+*.pfx
+credentials.json
+service-account*.json
 
 # macOS
 .DS_Store

@@ -48,6 +48,27 @@ Content-addressed, so re-running costs nothing for prompts already recorded.
 Record **both** seeds — discovering mid-demo that only the seed you were not
 going to show is covered is an avoidable way to lose.
 
+## Handle a key
+
+```bash
+cp .env.example .env      # then fill in OPENAI_API_KEY
+```
+
+`.env` and every `.env.*` variant are gitignored, along with `*.key`, `*.pem`
+and `credentials.json`. But **the ignore rules are not the guard** — they only
+help when the file is named the way you expected, and they do nothing about a key
+pasted into `config.py`. `tests/test_no_secrets.py` scans every git-tracked file
+for credential-shaped strings and runs as its own CI step, before lint, so a leak
+is the first line of the log.
+
+Exactly one file in `src/` reads the key, and a test asserts that stays true. The
+committed response cache holds only the model, the messages and the token counts
+— never a header or a client config — and there is a test for that too.
+
+**If a key ever does reach the remote: rotate it.** Do not revert and assume it
+is fine. Anything pushed to a public repository is compromised from the moment it
+lands, and a force-push does not un-fetch it.
+
 ## Reproduce a number a judge is questioning
 
 Every figure in `docs/metrics.md` and the README comes from `make metrics`.

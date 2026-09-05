@@ -17,6 +17,13 @@ jobs:
       - name: Install
         run: uv pip install --system -e ".[dev]"
 
+      # First, and on its own, so a leak is the first thing the log says rather
+      # than something buried in a 200-test summary. A secret that reaches a
+      # remote is compromised whether or not it is reverted -- the fix is a
+      # rotated key -- so this belongs upstream of the push, not after it.
+      - name: No committed secrets
+        run: pytest tests/test_no_secrets.py -q
+
       - name: Lint
         run: |
           ruff check .
