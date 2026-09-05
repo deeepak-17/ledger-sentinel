@@ -18,9 +18,19 @@ from typing import Final
 PAISE_PER_RUPEE: Final[int] = 100
 CURRENCY: Final[str] = "INR"
 
-# [assumed] Razorpay standard pricing: 2% per domestic transaction on cards,
-# netbanking and wallets. UPI carries zero MDR per the NPCI mandate for
-# person-to-merchant transactions. Basis points so the arithmetic stays integral.
+# Razorpay's published pricing is 2% + GST per domestic transaction across all
+# modes -- cards, netbanking, wallets AND UPI -- because the 2% is Razorpay's own
+# platform fee, not interchange:
+#   https://razorpay.com/pricing/
+# The NPCI zero-MDR mandate removes the *interchange* on person-to-merchant UPI
+# and RuPay debit, not an aggregator's platform fee.
+#
+# [deviation, deliberate] We price UPI at zero anyway. The dataset needs one path
+# where the bank credit equals the order amount exactly -- that is case 1, the
+# control group, and without it every single case in the taxonomy involves fee
+# arithmetic and we lose the ability to show a clean match at all. This is
+# documented in the open in README.md rather than left for a reader to catch.
+# Basis points so the arithmetic stays integral.
 FEE_BPS_BY_METHOD: Final[dict[str, int]] = {
     "card": 200,
     "netbanking": 200,
@@ -28,7 +38,8 @@ FEE_BPS_BY_METHOD: Final[dict[str, int]] = {
     "upi": 0,
 }
 
-# [assumed] GST at 18% is levied on the platform fee, not on the transaction.
+# [verified] GST at 18% is levied on the gateway's service fee, not on the
+# transaction value. https://razorpay.com/blog/international-payment-gateway-cost-india
 GST_BPS: Final[int] = 1800
 
 BPS_DENOMINATOR: Final[int] = 10_000
@@ -37,7 +48,8 @@ BPS_DENOMINATOR: Final[int] = 10_000
 # Timing
 # --------------------------------------------------------------------------
 
-# [assumed] Domestic settlements land T+2 business days after capture.
+# [verified] "T+2 working days, T being the date of transaction capture."
+# https://razorpay.com/docs/payments/settlements/faqs/
 SETTLEMENT_LAG_BUSINESS_DAYS: Final[int] = 2
 
 # The deterministic matcher tolerates this much drift between the settlement's
