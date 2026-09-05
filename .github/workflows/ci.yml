@@ -52,9 +52,12 @@ jobs:
       # Same discipline for the metrics document: no number in any file in this
       # repository is typed by hand. If the code and the document disagree, the
       # document is wrong and the build says so.
+      #
+      # Regenerated with --ai, because the committed document reports the full
+      # system. This needs no key: the classifier replays the committed cache.
       - name: Metrics document is regenerated, not written
         run: |
-          python -m src.metrics --seed B
+          python -m src.metrics --seed B --ai
           git diff --exit-code -- docs/
 
       # A reconciliation claim that is not reproducible is not a claim. This runs

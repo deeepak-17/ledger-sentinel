@@ -3,8 +3,8 @@ UV := uv
 
 .PHONY: setup data test lint fmt metrics ai models cache demo api determinism clean
 
-setup:                ## create the venv and install everything
-	$(UV) venv --python 3.11 .venv
+setup:                ## create (or recreate) the venv and install everything
+	$(UV) venv --clear --python 3.11 .venv
 	$(UV) pip install -e ".[dev]"
 
 data:                 ## regenerate both seed datasets and the distribution table

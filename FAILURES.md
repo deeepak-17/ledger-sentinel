@@ -152,7 +152,56 @@ misdiagnosed collision at confidence 1.0 — and asserts the gate refuses it.
 
 ---
 
-## 6. Still open
+## 6. "Temperature 0" was a determinism claim the system did not rest on
+
+**What happened.** The first live call the classifier ever made returned a 400:
+
+```
+Unsupported value: 'temperature' does not support 0.0 with this model.
+Only the default (1) value is supported.
+```
+
+`config.py` pinned `TEMPERATURE = 0.0` and the README, the docstring on
+`LiveBackend` and the generated `docs/metrics.md` all advertised it. The gpt-5
+family accepts no explicit temperature but its default, so every recording
+attempt failed before a single response was cached.
+
+**Why the claim was wrong beyond the 400.** The interesting part is not that the
+parameter was rejected — it is what fixing it exposed. "Temperature 0" was
+presented as the reason the AI layer was reproducible, and that was never true.
+The demo, the API, CI and `scripts/determinism.py` all read the
+content-addressed cache in `src/llm.py`, which replays byte-identically whatever
+sampling produced it. Temperature only ever governed reproducibility of a
+*re-recording*, which nothing in the submission depends on. The system was
+resting on the cache and taking credit for the parameter.
+
+**How it was caught.** By running it. The parameter had been carried for days
+across three documents in an environment with no network to try it in, and no
+test could have caught it: `tests/conftest.py` blanks the key so the suite never
+touches the live path, which is the correct trade and also precisely why this
+class of bug survives to the first real call.
+
+**What changed.** `TEMPERATURE` is now `None`, meaning "send nothing and take the
+model's default", and `LiveBackend` omits the parameter when it is unset — so
+pinning a model that *does* accept 0.0 still works without another code change.
+The claim was corrected in `config.py`, `src/llm.py` and `src/metrics.py` rather
+than quietly dropped, and it now says where determinism actually comes from.
+
+**One trap this leaves.** `TEMPERATURE` is an input to `request_key`, so it is
+part of the cache address. Changing it invalidates every recorded response and
+the offline path then raises `CacheMiss` — the failure a judge would see. It has
+to be settled before `make cache` and left alone afterwards.
+
+**Measured while fixing it.** A single live call was recorded before committing
+to the model: gpt-5-mini opened with `query_candidates` unprompted, and returned
+**0 reasoning tokens** against a 2048 `max_completion_tokens` budget. The worry
+that a reasoning model would spend its whole budget thinking and return no tool
+call — producing an empty diagnosis that looks like a weak model rather than a
+budget bug — was checked rather than assumed, and did not materialise.
+
+---
+
+## 7. Still open
 
 - **The deadline question went unanswered for three days.** The plan's own Day-0
   action was to confirm whether the repo was due at application time. It was

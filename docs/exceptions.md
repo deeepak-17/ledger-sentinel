@@ -6,7 +6,7 @@ An exception is not a failure. It is the system declining to book something it
 cannot justify, and saying why. Every one below carries a reason a controller can
 act on -- an unresolved item with no reason attached is just an unmatched row.
 
-On held-out **seed_B**: 56 closed, 9 raised.
+On held-out **seed_B**: 61 closed, 4 raised.
 
 ## Deterministic layer
 
@@ -18,7 +18,7 @@ On held-out **seed_B**: 56 closed, 9 raised.
 | `utr_date_outside_window` | exception | 0 | The reference agrees but the credit is dated outside the window the payout settled in. Usually a statement export spanning the wrong period; occasionally a reference that has been reused. |
 | `utr_already_claimed` | exception | 0 | This reference already closed an earlier credit. A reference that matches twice has stopped identifying anything, and the earlier claim does not make this credit true. |
 | `unknown_utr` | exception | 0 | The statement carries a reference that appears on no settlement row in this cycle. Most often the payout belongs to an earlier export. |
-| `no_identifier` | exception | 9 | A consolidated payout, which arrives over a rail that carries no reference at all. There is nothing to join on, so the deterministic layer refuses to guess a combination and hands it to the classifier along with the settlement rows still unaccounted for. |
+| `no_identifier` | exception | 0 | A consolidated payout, which arrives over a rail that carries no reference at all. There is nothing to join on, so the deterministic layer refuses to guess a combination and hands it to the classifier along with the settlement rows still unaccounted for. |
 | `not_a_credit` | exception | 0 | A debit on the statement. The settlement report describes money coming in, so this needs a human to classify it. |
 
 ## Resolution gate
@@ -30,24 +30,19 @@ where this system must not.
 
 | Rule | Outcome | Fired | What it means |
 |---|---|---:|---|
-| `model_escalated` | exception | 0 | The classifier investigated and declined to attribute the credit. Its reasoning is attached. |
+| `model_escalated` | exception | 3 | The classifier investigated and declined to attribute the credit. Its reasoning is attached. |
 | `no_rows_claimed` | exception | 0 | The classifier said 'matched' but named no settlement rows, so there is nothing to book. |
 | `claimed_rows_do_not_sum` | exception | 0 | The rows the classifier named do not sum to the credit. Re-checked here against the same money functions the deterministic matcher uses -- a diagnosis that does not survive re-checking is never booked, whatever confidence it carries. |
 | `ambiguous_evidence_veto` | exception | 0 | The tools found two complete settlement batches that each explain this credit exactly and share no rows. Nothing in the data chooses between them, so no stated confidence is high enough. This is derived from the evidence rather than from the model's opinion of itself, which is why it holds even when the classifier misdiagnoses the case. |
 | `always_escalate_case` | exception | 0 | The case is on the never-auto-resolve list. On these constructions the classifier being confident is itself the failure being guarded against. |
-| `below_confidence_threshold` | exception | 0 | The classifier was not confident enough to book without review. A low number here is a legitimate result, not a failure. |
+| `below_confidence_threshold` | exception | 1 | The classifier was not confident enough to book without review. A low number here is a legitimate result, not a failure. |
 | `auto_resolved` | match | 0 | Diagnosed, re-verified arithmetically, unambiguous, and above the confidence threshold. Booked without review. |
 
 ## The unresolved list
 
 | Bank line | Amount | Rule | Candidates | Ground truth |
 |---|---:|---|---:|---|
-| BNK00015 | Rs 19,608.06 | `no_identifier` | 21 | case 4 (matched) |
-| BNK00016 | Rs 8,256.21 | `no_identifier` | 21 | case 5 (matched) |
-| BNK00029 | Rs 15,996.07 | `no_identifier` | 21 | case 4 (matched) |
-| BNK00030 | Rs 4,177.07 | `no_identifier` | 21 | case 5 (matched) |
-| BNK00031 | Rs 2,245.72 | `no_identifier` | 21 | case 10 (escalate) |
-| BNK00036 | Rs 9,363.68 | `no_identifier` | 21 | case 4 (matched) |
-| BNK00037 | Rs 2,343.36 | `no_identifier` | 21 | case 10 (escalate) |
-| BNK00052 | Rs 15,426.15 | `no_identifier` | 6 | case 4 (matched) |
-| BNK00063 | Rs 3,396.64 | `no_identifier` | 6 | case 5 (matched) |
+| BNK00016 | Rs 8,256.21 | `model_escalated` | 21 | case 5 (matched) |
+| BNK00031 | Rs 2,245.72 | `model_escalated` | 21 | case 10 (escalate) |
+| BNK00037 | Rs 2,343.36 | `model_escalated` | 21 | case 10 (escalate) |
+| BNK00052 | Rs 15,426.15 | `below_confidence_threshold` | 6 | case 4 (matched) |

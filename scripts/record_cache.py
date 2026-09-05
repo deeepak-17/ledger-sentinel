@@ -31,16 +31,20 @@ from src.llm import CACHE_PATH, LiveBackend, ResponseCache, load_env  # noqa: E4
 from src.matcher import reconcile  # noqa: E402
 from src.pipeline import run_reconciliation, seed_dir  # noqa: E402
 
-# Measured, not guessed. The conversations were simulated offline against both
-# seeds and the payloads counted: a three-turn investigation sends roughly
-# 7.3k + 11.0k + 12.1k characters as tool results accumulate, and answers with
-# a short tool call each time. Converted at ~3.6 chars per token.
+# Corrected against a real recording rather than a simulation. The first live run
+# (gpt-5-mini, both seeds, 18 exceptions, 60 calls) reported 183,619 input and
+# 33,030 output tokens -- 10.2k in and 1.8k out per exception.
 #
-# This is an ESTIMATE shown before spending, not a measurement of the run. The
-# run reports its actual token counts when it finishes, and if the two disagree
-# badly, these constants are what to correct.
-EST_INPUT_TOKENS_PER_EXCEPTION = 8_500
-EST_OUTPUT_TOKENS_PER_EXCEPTION = 750
+# The earlier figures were derived offline by counting prompt characters at ~3.6
+# chars per token: 8,500 in and 750 out. Input was close; output was low by 2.4x,
+# because that arithmetic priced the tool-call arguments and missed how much the
+# model writes into the `reasoning` field of submit_diagnosis -- which is the part
+# a controller actually reads, so it is long on purpose.
+#
+# This is still an ESTIMATE shown before spending, not a measurement of the run
+# it precedes. The run reports its own actuals when it finishes.
+EST_INPUT_TOKENS_PER_EXCEPTION = 10_200
+EST_OUTPUT_TOKENS_PER_EXCEPTION = 1_850
 
 
 def estimate(seeds: list[str]) -> tuple[int, int, int, float]:

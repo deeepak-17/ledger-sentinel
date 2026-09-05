@@ -113,7 +113,24 @@ ALWAYS_ESCALATE_CASES: Final[frozenset[int]] = frozenset({10, 11})
 # Override without editing code:  echo 'LEDGER_SENTINEL_MODEL=<id>' >> .env
 # `make models` lists what a key can actually reach and checks this pin.
 MODEL: Final[str] = os.environ.get("LEDGER_SENTINEL_MODEL", "gpt-5-mini")
-TEMPERATURE: Final[float] = 0.0
+
+# None means "send no temperature and take the model's default". The gpt-5 family
+# rejects any explicit temperature but the default (1), so pinning 0.0 here made
+# every live call fail with a 400 -- see FAILURES.md #6.
+#
+# Determinism was never coming from this value. The demo, the API, CI and
+# scripts/determinism.py all read the content-addressed cache, which replays
+# byte-identically whatever the model was sampled at. What an explicit 0.0 would
+# buy is reproducibility of a RE-RECORDING, and that is what is given up.
+#
+# This constant is part of the cache key (src/llm.py request_key). Changing it
+# invalidates every recorded response and makes the offline path raise CacheMiss,
+# so it must be settled before `make cache` and left alone afterwards.
+TEMPERATURE: Final[float | None] = None
+
+# Sent as `max_completion_tokens`, which on a reasoning model covers reasoning
+# tokens as well as visible output. Measured on gpt-5-mini: reasoning came back
+# at 0 tokens and a first turn cost 34 output tokens, so this is generous.
 MAX_TOKENS: Final[int] = 2048
 
 # How many tool-use turns one exception is allowed before the classifier gives up

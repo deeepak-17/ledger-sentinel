@@ -160,8 +160,12 @@ class ReplayBackend:
 
 @dataclass
 class LiveBackend:
-    """Calls the API at temperature 0 against a pinned model, and records every
-    response into the cache so the next run needs no network."""
+    """Calls the API against a pinned model and records every response into the
+    cache, so the next run needs no network.
+
+    Temperature is sent only when `config.TEMPERATURE` is set; the gpt-5 family
+    accepts no explicit value but its default. Determinism of the demo comes from
+    the content-addressed cache, not from sampling -- see FAILURES.md #6."""
 
     cache: ResponseCache = field(default_factory=ResponseCache)
     model: str = MODEL
@@ -199,14 +203,16 @@ class LiveBackend:
         except LLMError:
             raise
         try:
-            completion = client.chat.completions.create(
-                model=self.model,
-                temperature=TEMPERATURE,
-                max_completion_tokens=MAX_TOKENS,
-                messages=messages,
-                tools=tools,
-                tool_choice="auto",
-            )
+            kwargs: dict[str, Any] = {
+                "model": self.model,
+                "max_completion_tokens": MAX_TOKENS,
+                "messages": messages,
+                "tools": tools,
+                "tool_choice": "auto",
+            }
+            if TEMPERATURE is not None:
+                kwargs["temperature"] = TEMPERATURE
+            completion = client.chat.completions.create(**kwargs)
         except Exception as exc:  # noqa: BLE001 -- vendor exceptions vary; the caller
             # only needs to know the model could not be reached, and every caller
             # of this treats that as "escalate" rather than "crash".

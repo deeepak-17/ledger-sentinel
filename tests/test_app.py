@@ -39,10 +39,21 @@ def test_the_headline_is_the_false_match_rate(app):
 
 
 def test_it_shows_the_held_out_numbers(app):
+    """The demo opens on seed_B, and the AI toggle defaults on when a cache is
+    recorded -- so which numbers are on screen depends on whether this checkout
+    has one. The false-match rate is the invariant across both: adding the
+    classifier raises the match rate and must not cost any safety margin."""
+    from src.llm import CACHE_PATH
+
     values = {metric.label: metric.value for metric in app.metric}
     assert values["False-match rate"] == "0.0%"
-    assert values["Match rate"] == "70.0%"
-    assert values["Exceptions"] == "9"
+
+    if CACHE_PATH.exists():
+        assert values["Match rate"] == "86.2%"
+        assert values["Exceptions"] == "4"
+    else:
+        assert values["Match rate"] == "70.0%"
+        assert values["Exceptions"] == "9"
 
 
 def test_every_tab_is_present(app):
