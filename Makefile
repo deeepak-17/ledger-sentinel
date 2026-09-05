@@ -26,7 +26,7 @@ ai:                   ## the whole system, replaying the committed response cach
 	$(PY) -m src.metrics --seed B --ai
 
 cache:                ## re-record the LLM cache against the live API (needs a key)
-	$(PY) -m scripts.record_cache --seed A --seed B
+	$(PY) scripts/record_cache.py --seed A --seed B
 
 determinism:          ## three identical runs, asserted equal, classifier included
 	$(PY) scripts/determinism.py --seed B --runs 3 --ai
