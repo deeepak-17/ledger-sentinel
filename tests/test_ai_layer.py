@@ -423,7 +423,8 @@ class TestEndToEndWithAScriptedAnalyst:
         assert refused == {"BNK00031", "BNK00037"}
         assert {e.bank_txn_id for e in final.exceptions} == refused
 
-    def test_the_scorer_sees_no_false_matches(self, outcome):
+    @staticmethod
+    def _report(outcome):
         from src.ingest import load_truth
         from src.metrics import score
         from src.pipeline import seed_dir
@@ -440,7 +441,32 @@ class TestEndToEndWithAScriptedAnalyst:
             decisions=decisions,
             ai_ran=True,
         )
-        report = score(enriched, load_truth(seed_dir("B") / "truth.json"))
+        return score(enriched, load_truth(seed_dir("B") / "truth.json"))
+
+    def test_the_scorer_sees_no_false_matches(self, outcome):
+        report = self._report(outcome)
         assert report.false_matches == ()
         assert report.match_rate == 1.0 - 6 / 80
         assert report.escalation_achieved == report.escalation_required
+
+    def test_the_ai_layer_is_scored_separately_from_the_rules(self, outcome):
+        report = self._report(outcome)
+        assert report.ai is not None
+        assert report.ai.exceptions_seen == 9
+        assert report.ai.auto_resolved == 7
+        assert report.ai.auto_resolve_precision == 1.0
+        assert report.ai.adversarial_escalated == report.ai.adversarial_seen == 2
+        assert report.ai.calibration
+
+    def test_both_reports_render_the_ai_section(self, outcome):
+        from src.metrics import render_markdown, render_text
+
+        report = self._report(outcome)
+        body = render_text(report)
+        assert "auto-resolve precision" in body
+        assert "Calibration" in body
+        assert body.index("FALSE-MATCH RATE") < body.index("auto-resolve precision")
+
+        markdown = render_markdown(report)
+        assert "## AI layer" in markdown
+        assert "Why each escalation happened" in markdown

@@ -1,7 +1,7 @@
 PY := .venv/bin/python
 UV := uv
 
-.PHONY: setup data test lint metrics demo determinism clean
+.PHONY: setup data test lint metrics ai cache demo api determinism clean
 
 setup:                ## create the venv and install everything
 	$(UV) venv --python 3.11 .venv
@@ -12,18 +12,27 @@ data:                 ## regenerate both seed datasets and the distribution tabl
 	$(PY) -m data.generator --seed B
 	$(PY) -m data.generator --readme
 
-test:                 ## unit, golden, adversarial and API tests
+test:                 ## unit, golden, adversarial, tools, AI-layer and API tests
 	$(PY) -m pytest
 
 lint:
 	$(PY) -m ruff check .
 	$(PY) -m ruff format --check .
 
-metrics:              ## run the pipeline on the held-out seed and print the report
+metrics:              ## deterministic layer only, on the held-out seed
 	$(PY) -m src.metrics --seed B
 
-determinism:          ## three identical runs, asserted equal
-	$(PY) scripts/determinism.py --seed B --runs 3
+ai:                   ## the whole system, replaying the committed response cache
+	$(PY) -m src.metrics --seed B --ai
+
+cache:                ## re-record the LLM cache against the live API (needs a key)
+	$(PY) -m scripts.record_cache --seed A --seed B
+
+determinism:          ## three identical runs, asserted equal, classifier included
+	$(PY) scripts/determinism.py --seed B --runs 3 --ai
+
+api:                  ## FastAPI on :8000; /docs is the interactive evidence
+	$(PY) -m uvicorn src.api:app --reload
 
 demo:                 ## the one command a judge runs
 	$(PY) -m streamlit run src/app.py
