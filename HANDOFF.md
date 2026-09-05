@@ -1,6 +1,6 @@
 # Handoff — Ledger Sentinel
 
-Last updated: **2026-09-05**, after M2. Written for whoever picks this up next,
+Last updated: **2026-09-05**, after M3/M4 code. Written for whoever picks this up next,
 including future-me on another machine or another tool.
 
 ---
@@ -36,8 +36,8 @@ someone's head.
 | **M0 — Foundations** | ✅ done | schemas, config, money/date rules, CI |
 | **M1 — Labelled dataset** | ✅ done | 2 seeds, published truth, byte-identical regeneration |
 | **M2 — Deterministic matcher + audit** | ✅ done | 0.0% false-match, 70.0% match rate, zero unlogged decisions |
-| **M3 — Classifier + gate** | ❌ not started | this is the next thing to build |
-| **M4 — Submission package** | ❌ not started | README does not exist yet |
+| **M3 — Classifier + gate** | ✅ code done | tools, LLM boundary, loop, gate, AI metrics, determinism script. **Cache not yet recorded** -- needs a key once |
+| **M4 — Submission package** | ✅ mostly | README, architecture.md, FAILURES.md, runbook, exceptions.md, Streamlit demo, video script. Video not recorded |
 | **M5 — Stretch (cases 6/7/9/11)** | ❌ not started | switch exists, builders do not |
 
 **Now under version control.** Two commits: `M0+M1` and `M2`. The working
@@ -242,7 +242,23 @@ and it deserves its own rule then.
 
 ---
 
-## 5. What to build next — M3
+## 5. What is left
+
+**In priority order, and both of the first two need Deepak:**
+
+1. **Record the response cache.** `printf 'OPENAI_API_KEY=sk-...' > .env` then
+   `make cache`. This is the only step in the project that needs a key.
+   Everything else replays what it produces. Until this runs, the AI layer's
+   accuracy is untested against a real model -- the end-to-end test uses a
+   scripted stand-in that proves the plumbing, not the intelligence.
+2. **Push.** The remote is configured; the sandboxed shell has no credentials, so
+   `git push -u origin main` has to be run by hand or with a token in `.env`.
+3. **Tune the threshold on seed_A**, then report once on seed_B. Do not iterate
+   on what seed_B shows.
+4. **Record the video** from `docs/video-script.md`.
+5. Regenerate `make metrics` and paste the final numbers into the README.
+
+### The original M3 plan, for reference
 
 **Objective:** the AI layer resolves the residual with calibrated confidence, and
 refuses the case it cannot know.
@@ -305,15 +321,14 @@ five-minute video ending on what could not be solved.
 
 ## 7. Immediate actions, highest priority first
 
-1. **Answer the deadline question in §0** and record the answer in the README.
-2. **Write `README.md`.** It is the one artefact a judge is guaranteed to read
-   and it does not exist. First ten lines: false-match rate, then match rate,
-   then unresolved count, all copied from `docs/metrics.md`.
-3. **Cite the fee/GST/T+2 assumptions** against Razorpay's public pricing and
-   settlement docs, and paste the link into `config.py` and the README.
-4. **Push to a remote.** Two local commits protect against a rename; they do not
-   protect against a disk.
-5. Then start M3, in the order in §5.
+1. **Record the cache** (§5.1) -- the only remaining thing that needs a key.
+2. **Push** (§5.2). Twelve commits exist on one laptop.
+3. **Record the video.**
+
+Resolved since the last handoff: the deadline question (repo due 5 Sept 23:59,
+Track A), the README (written), and the assumption citations (T+2 working days
+and 18% GST verified; the UPI zero-rating turned out to be a real error, kept
+deliberately and stated in the open -- `FAILURES.md` entry 3).
 
 ---
 
@@ -322,7 +337,7 @@ five-minute video ending on what could not be solved.
 ```bash
 cd /Users/deepak/Downloads/Razorpay/ledger-sentinel
 make setup       # uv venv on Python 3.11 + install
-make test        # expect 144 passing
+make test        # expect 200 passing
 make lint
 make data        # regenerates both seeds + data/README.md; must produce no diff
 make metrics     # runs the pipeline on seed_B, prints the report, writes docs/metrics.md
