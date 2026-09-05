@@ -158,7 +158,12 @@ def decisions_for(conn: sqlite3.Connection, run_id: str, subject_id: str) -> lis
 
 
 def unlogged_decisions(conn: sqlite3.Connection, run_id: str) -> int:
-    """How many recorded matches and exceptions have no audit row. Must be 0."""
+    """How many recorded matches and exceptions have no audit row. Must be 0.
+
+    Counts only rows whose `decision` is a verdict. The AI layer also logs a row
+    per tool call, which is evidence rather than a decision -- including those
+    here would make the SLO trivially satisfiable by being chatty.
+    """
     decided = int(
         conn.execute(
             "SELECT (SELECT count(*) FROM matches WHERE run_id = ?) + "
@@ -167,6 +172,9 @@ def unlogged_decisions(conn: sqlite3.Connection, run_id: str) -> int:
         ).fetchone()[0]
     )
     logged = int(
-        conn.execute("SELECT count(*) FROM audit WHERE run_id = ?", (run_id,)).fetchone()[0]
+        conn.execute(
+            "SELECT count(*) FROM audit WHERE run_id = ? AND decision IN (?, ?)",
+            (run_id, DECISION_MATCH, DECISION_EXCEPTION),
+        ).fetchone()[0]
     )
     return decided - logged

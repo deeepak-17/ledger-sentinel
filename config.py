@@ -9,6 +9,7 @@ Money is ALWAYS integer paise. Never float. 1 rupee == 100 paise.
 
 from __future__ import annotations
 
+import os
 from typing import Final
 
 # --------------------------------------------------------------------------
@@ -95,14 +96,35 @@ ALWAYS_ESCALATE_CASES: Final[frozenset[int]] = frozenset({10, 11})
 # LLM
 # --------------------------------------------------------------------------
 
-MODEL: Final[str] = "claude-sonnet-5"
+# The plan named Claude here. We ship against OpenAI because that is the API key
+# available to this build. It is a dependency swap, not a design change -- the
+# classifier sits behind a backend interface and neither the tools, the gate nor
+# the metrics know which vendor answered. Pinned exactly, because "the latest
+# model" is not a reproducible experiment.
+MODEL: Final[str] = os.environ.get("LEDGER_SENTINEL_MODEL", "gpt-5.1")
 TEMPERATURE: Final[float] = 0.0
 MAX_TOKENS: Final[int] = 2048
 
+# How many tool-use turns one exception is allowed before the classifier gives up
+# and escalates. A model still calling tools after this many rounds is not
+# converging, and an escalation is the honest outcome.
+MAX_TOOL_TURNS: Final[int] = 8
+
 # Rupees per million tokens, used only to print a cost line in `make metrics`.
-# [assumed] list pricing at time of build.
-COST_INR_PER_MTOK_INPUT: Final[float] = 250.0
-COST_INR_PER_MTOK_OUTPUT: Final[float] = 1250.0
+# [assumed] list pricing at time of build; see README for the source.
+COST_INR_PER_MTOK_INPUT: Final[float] = 106.0
+COST_INR_PER_MTOK_OUTPUT: Final[float] = 850.0
+
+# --------------------------------------------------------------------------
+# Deterministic guardrail on the AI layer
+# --------------------------------------------------------------------------
+
+# If the tools prove a credit has two or more STRUCTURALLY VALID readings that
+# share no rows -- each of them a complete settlement batch -- then no stated
+# confidence may auto-resolve it. This is the backstop that does not depend on
+# the model correctly recognising the adversarial case: it is a fact derived
+# from the tool trace, not from the model's opinion of itself.
+VETO_ON_AMBIGUOUS_EVIDENCE: Final[bool] = True
 
 # --------------------------------------------------------------------------
 # Dataset

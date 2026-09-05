@@ -129,7 +129,14 @@ def _judge(match: Match, truth: TruthRecord | None) -> str | None:
 
 
 def score(result: RunResult, truth: tuple[TruthRecord, ...]) -> Report:
-    reconciliation = result.reconciliation
+    """Score what the system as a whole concluded.
+
+    `result.outcome` is the deterministic layer alone when the AI layer did not
+    run, and both layers combined when it did. Deliberately the same function
+    either way: a false match booked by the classifier is counted against the
+    identical headline number as one booked by a rule.
+    """
+    reconciliation = result.outcome
     truth_by_bank = _truth_by_bank(truth)
     matched_orders = reconciliation.matched_order_ids
     matched_bank = reconciliation.matched_bank_txn_ids
