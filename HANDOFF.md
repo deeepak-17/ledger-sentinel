@@ -1,31 +1,28 @@
 # Handoff — Ledger Sentinel
 
-Last updated: **2026-09-05**, after M3/M4 code. Written for whoever picks this up next,
-including future-me on another machine or another tool.
+Last updated: **2026-09-05, 10:00 IST**, mid-build. Written for whoever picks
+this up next — immediately, that is a Claude Code CLI session running on
+Deepak's Mac.
 
 ---
 
 ## 0. Read this first
 
-**The application deadline in the plan is today, 5 September 2026,** and the
-plan's own Day-0 action — *"confirm on the form whether repo/video are due at
-submission"* — has still not been carried out. Do that before anything else.
+**Submission deadline is tonight, 5 September 2026, 23:59 IST.** Registration and
+the repo are both due then — Track A confirmed, so the repository must be
+submittable as it stands. It currently is.
 
-What changed since the last handoff is that the answer is no longer existential.
-M2 landed, so there is a working Loop-1 baseline in the repo:
+**Repo:** https://github.com/deeepak-17/ledger-sentinel — 18 commits, CI green.
 
-- **If a repo is due today (Track A):** what exists is submittable. Three CSVs go
-  in, a reconciled ledger and a diagnosed exception list come out, every decision
-  is logged, and the headline number is a **0.0% false-match rate at a 70.0%
-  match rate on held-out data**. The AI layer, the video and the README are not
-  built — the honest framing is "the deterministic half of the system, measured".
-  That is a real submission rather than a data generator.
-- **If today is registration only (Track B):** the schedule is comfortable. M0,
-  M1 and M2 are done and the remaining milestones stand as written in
-  `02-ledger-sentinel-plan.md` §6.
+**The one thing blocking real work:** the LLM response cache has never been
+recorded, because the sandboxed environment the previous session ran in cannot
+reach `api.openai.com` (403 from its egress proxy; the cloud container could not
+either). **You are running locally and almost certainly can.** That single step
+is §5.1 and everything else in M3 waits on it.
 
-Either way, **write the answer into the README** rather than leaving it in
-someone's head.
+Both keys are already in `.env` (gitignored): `OPENAI_API_KEY` and a
+`GITHUB_TOKEN` used for pushes. **Revoke the GitHub PAT once tonight is over** —
+github.com/settings/tokens.
 
 ---
 
@@ -33,17 +30,19 @@ someone's head.
 
 | Milestone | State | Notes |
 |---|---|---|
-| **M0 — Foundations** | ✅ done | schemas, config, money/date rules, CI |
-| **M1 — Labelled dataset** | ✅ done | 2 seeds, published truth, byte-identical regeneration |
-| **M2 — Deterministic matcher + audit** | ✅ done | 0.0% false-match, 70.0% match rate, zero unlogged decisions |
-| **M3 — Classifier + gate** | ✅ code done | tools, LLM boundary, loop, gate, AI metrics, determinism script. **Cache not yet recorded** -- needs a key once |
-| **M4 — Submission package** | ✅ mostly | README, architecture.md, FAILURES.md, runbook, exceptions.md, Streamlit demo, video script. Video not recorded |
-| **M5 — Stretch (cases 6/7/9/11)** | ❌ not started | switch exists, builders do not |
+| **M0 — Foundations** | ✅ | schemas, config, money/date rules, CI |
+| **M1 — Labelled dataset** | ✅ | 2 seeds, published truth, byte-identical regeneration |
+| **M2 — Deterministic matcher + audit** | ✅ | 0.0% false-match, 70.0% match rate, zero unlogged decisions |
+| **M3 — Classifier + gate** | ⚠️ code done, **unmeasured** | every part built and tested offline. The cache is empty, so no number in this milestone has been produced by an actual model |
+| **M4 — Submission package** | ✅ except the video | README, architecture, FAILURES, runbook, exceptions, demo, video script |
+| **M5 — Stretch (cases 6/7/9/11)** | ❌ | switch exists, builders do not |
 
-**Now under version control.** Two commits: `M0+M1` and `M2`. The working
-directory vanished once during this build (parent folder renamed on 3 September)
-and every file had to be reconstructed; that risk is closed. Push to a remote
-when there is one.
+**Be precise about M3 when you talk about it.** The end-to-end test drives a
+scripted stand-in that plays a competent analyst deterministically. It proves the
+plumbing — that a correct diagnosis gets booked, that the gate refuses what it
+should, that a false match cannot pass the arithmetic re-check. It proves nothing
+about the model. Until §5.1 runs, "diagnosis accuracy" and "auto-resolve
+precision" have no measured values and must not be quoted.
 
 ---
 
@@ -51,69 +50,41 @@ when there is one.
 
 ```
 ledger-sentinel/
-├── pyproject.toml           Python 3.11, pinned deps, ruff + pytest config
-├── Makefile                 setup / data / test / lint / metrics / demo / determinism
-├── config.py                EVERY constant: fee bps, GST, T+N, tolerances, threshold
-├── HANDOFF.md               this file
+├── config.py                EVERY rate, window and threshold; nothing in src/ hardcodes one
+├── .env                     gitignored — OPENAI_API_KEY, GITHUB_TOKEN
+├── .env.example             committed template
+├── Makefile                 setup data test lint fmt metrics ai models cache demo api determinism
 ├── src/
 │   ├── cases.py             the 11-case taxonomy — the contract everything shares
-│   ├── schema.py            pydantic models for orders / settlements / bank / truth
-│   ├── money.py             fee + GST in integer paise, half-up rounding
-│   ├── dates.py             T+2 business days, weekends, bank holidays
+│   ├── schema.py            pydantic models for the three sources and ground truth
+│   ├── money.py  dates.py   integer-paise fee/GST, T+2 business-day calendar
 │   ├── ingest.py            CSV → validated models; header drift and bad rows raise
 │   ├── db.py                SQLite: orders settlements bank matches exceptions audit runs
 │   ├── matcher.py           the deterministic layer — pure function, no I/O
 │   ├── audit.py             one row per decision; zero unlogged decisions is asserted
+│   ├── tools.py             the three tools; subset_sum returns EVERY solution
+│   ├── llm.py               one call, two backends, content-addressed cache
+│   ├── classifier.py        the tool-use loop; prompt carries no answer key
+│   ├── gate.py              what may be booked — confidence is checked LAST
 │   ├── pipeline.py          the one orchestration shared by CLI, API and tests
-│   └── metrics.py           scoring; the ONLY module allowed to read truth.json
-├── data/
-│   ├── generator.py         orchestration, CSV writing, self-generating README
-│   ├── scenarios.py         one builder per planted case
-│   ├── ids.py               seeded Razorpay-style id minting
-│   ├── README.md            GENERATED — do not hand-edit, run `make data`
-│   ├── seed_A/              tuning set: orders, settlements, bank, truth.json
-│   └── seed_B/              held-out set — do not look at it while tuning
-├── docs/
-│   └── metrics.md           GENERATED — do not hand-edit, run `make metrics`
-├── tests/
-│   ├── conftest.py          session-scoped pipeline runs per seed
-│   ├── test_unit_money.py   fee/GST arithmetic, rounding, formatting
-│   ├── test_unit_dates.py   settlement calendar
-│   ├── test_unit_dataset.py ground-truth totality + adversarial-case integrity
-│   ├── test_unit_ingest.py  malformed input must raise, naming file and line
-│   ├── test_golden.py       the metrics floor and the audit-trail SLO
-│   └── test_adversarial.py  case 10 is not matched by the deterministic layer
-└── .github/workflows/ci.yml lint, test, and prove data/ and docs/ regenerate
+│   ├── metrics.py           scoring; the ONLY module allowed to read truth.json
+│   ├── api.py               FastAPI; /docs is interactive evidence
+│   └── app.py               Streamlit demo
+├── data/                    generator, scenarios, ids, seed_A/, seed_B/, GENERATED README.md
+├── scripts/                 determinism.py, record_cache.py, models.py
+├── docs/                    architecture.md, runbook.md, video-script.md,
+│                            metrics.md + exceptions.md (both GENERATED)
+├── tests/                   207 tests — unit, golden, adversarial, tools, ai_layer,
+│                            api, app, no_secrets
+├── cache/llm_responses.jsonl   **DOES NOT EXIST YET** — this is §5.1
+└── .github/workflows/ci.yml
 ```
 
-Missing but referenced by the `Makefile` and CI (they will fail until written):
-`src/tools.py`, `src/classifier.py`, `src/gate.py`, `src/api.py`, `src/app.py`,
-`scripts/determinism.py`, `cache/llm_responses.jsonl`, `README.md`,
-`FAILURES.md`, `docs/architecture.md`, `docs/exceptions.md`, `docs/runbook.md`.
-
-`ledger.db` is a build artefact of `make metrics` and is gitignored.
+Never written: `FAILURES.md` covers this in "Still open".
 
 ---
 
 ## 3. Verified numbers
-
-### Dataset (both seeds, reproduced on every run)
-
-- **80 orders**, 83 settlement rows, 65 bank lines, 65 truth records
-- every order, settlement row and bank line claimed by **exactly one** truth record
-- **56 of 65** bank lines carry a UTR; **9 do not** (4 batched + 3 netted refund + 2 collision)
-- regenerating a seed is **byte-identical** (asserted in CI via `git diff --exit-code`)
-- seed_A and seed_B share **no identifiers**
-
-| Case | Name | Layer | Units | Orders |
-|---:|---|---|---:|---:|
-| 1 | Clean match | deterministic | 18 | 18 |
-| 2 | Fee and GST deducted | deterministic | 22 | 22 |
-| 3 | Settlement timing gap | deterministic | 10 | 10 |
-| 4 | Batched payout | tool | 4 | 12 |
-| 5 | Refund netted into batch | ai | 3 | 6 |
-| 8 | Paise rounding drift | deterministic | 6 | 6 |
-| 10 | Amount collision (adversarial) | **escalate** | 2 | 6 |
 
 ### Deterministic layer, held-out seed_B (`make metrics`)
 
@@ -126,19 +97,39 @@ Missing but referenced by the `Makefile` and CI (they will fail until written):
 | Unlogged decisions | 0 |
 
 Identical on seed_A, which is the point: the 70% is a property of the data (56
-orders sit behind a bank credit carrying a UTR), not a tuned result.
+orders sit behind a credit carrying a UTR), not a tuned result. Rules that fired:
+`utr_exact` 50, `utr_within_rounding` 6 (case 8), `no_identifier` 9.
 
-Match rules that fired: `utr_exact` 50, `utr_within_rounding` 6 (case 8).
-Exception rules that fired: `no_identifier` 9.
+### Dataset (both seeds)
 
-**144 tests pass**, `ruff check` and `ruff format --check` clean.
+80 orders · 83 settlement rows · 65 bank lines · 65 truth records, every row
+claimed exactly once · 9 of 65 bank lines carry no UTR · regeneration is
+byte-identical (CI asserts it) · seeds share no identifiers.
+
+| Case | Name | Layer | Units | Orders |
+|---:|---|---|---:|---:|
+| 1 | Clean match | deterministic | 18 | 18 |
+| 2 | Fee and GST deducted | deterministic | 22 | 22 |
+| 3 | Settlement timing gap | deterministic | 10 | 10 |
+| 4 | Batched payout | tool | 4 | 12 |
+| 5 | Refund netted into batch | ai | 3 | 6 |
+| 8 | Paise rounding drift | deterministic | 6 | 6 |
+| 10 | Amount collision (adversarial) | **escalate** | 2 | 6 |
+
+### AI layer
+
+**No measured numbers exist.** See §1.
+
+**207 tests pass**, ruff clean, CI green on every step including determinism and
+an offline pipeline run with `OPENAI_API_KEY` blanked.
 
 ---
 
 ## 4. Design decisions that will not survive in the code alone
 
-These are the judgement calls. Anyone continuing needs them, and they are the
-material for `docs/architecture.md` when M4 comes around.
+These are the judgement calls. Anyone continuing needs them. They are also the
+material behind `docs/architecture.md`, which is written -- if you change a
+decision here, change it there too.
 
 ### 4.1 The deterministic layer requires an identifier
 
@@ -242,65 +233,103 @@ and it deserves its own rule then.
 
 ---
 
-## 5. What is left
+---
 
-**In priority order, and both of the first two need Deepak:**
+## 5. What is left, in order
 
-1. **Record the response cache.** `printf 'OPENAI_API_KEY=sk-...' > .env` then
-   `make cache`. This is the only step in the project that needs a key.
-   Everything else replays what it produces. Until this runs, the AI layer's
-   accuracy is untested against a real model -- the end-to-end test uses a
-   scripted stand-in that proves the plumbing, not the intelligence.
-2. **Push.** The remote is configured; the sandboxed shell has no credentials, so
-   `git push -u origin main` has to be run by hand or with a token in `.env`.
-3. **Tune the threshold on seed_A**, then report once on seed_B. Do not iterate
-   on what seed_B shows.
-4. **Record the video** from `docs/video-script.md`.
-5. Regenerate `make metrics` and paste the final numbers into the README.
+### 5.1 Record the response cache — BLOCKING, and the only step that needs a key
 
-### The original M3 plan, for reference
+```bash
+cd ~/Downloads/Razorpay/ledger-sentinel
+make setup      # .venv on disk predates the OpenAI dependency; recreate it
+make models     # what this key can see, and whether the pin is valid
+```
 
-**Objective:** the AI layer resolves the residual with calibrated confidence, and
-refuses the case it cannot know.
+**`config.py` pins `MODEL = "gpt-5.1"`, which is an unverified guess.** The
+previous session had no network and could not check it. `make models` prints the
+chat models the key can actually reach and says whether the pin is among them. If
+it is not, override without touching code:
 
-The exception list the classifier receives is nine bank credits per seed: four
-batched payouts (case 4), three netted refunds (case 5), two amount collisions
-(case 10). Each arrives with its candidate settlement rows already scoped to the
-date window and stripped of anything an identifier claimed.
+```bash
+echo 'LEDGER_SENTINEL_MODEL=<id>' >> .env
+```
 
-Build in this order:
+Then:
 
-1. **`src/tools.py`** — three tools, all pure arithmetic, all unit-tested
-   independently of the model:
-   - `query_candidates(order_id | amount | window)` — read-only over SQLite
-   - `expected_fee(amount, method)` — a thin wrapper over `src.money`, so the
-     model and the deterministic layer can never disagree about arithmetic
-   - `subset_sum(candidates, target, max_k)` — bounded by `MAX_SUBSET_SIZE`;
-     **must return all solutions, not the first**, because returning one is
-     precisely how case 10 gets auto-resolved
-2. **`src/classifier.py`** — Claude behind an interface, temp 0, pinned model,
-   tool-use loop. Output: `case_id`, resolution, confidence, reasoning, tool-call
-   trace. The offline replay backend is not optional — see §6.
-3. **`src/gate.py`** — `confidence >= AUTO_RESOLVE_THRESHOLD` auto-resolves,
-   below escalates with the reason. `ALWAYS_ESCALATE_CASES` (10, 11) never
-   auto-resolve **regardless of stated confidence**; a confident wrong answer is
-   the failure being guarded against, not an edge case.
-4. **`cache/llm_responses.jsonl`** — committed, keyed on a hash of the prompt.
-   Populated when a key is present, replayed when it is not.
-5. **`scripts/determinism.py`** — three runs, assert identical.
-6. Extend `src/metrics.py`: diagnosis accuracy per case, auto-resolve precision,
-   a calibration table, cost and token counts into the `runs` table (the columns
-   are already there).
+```bash
+make cache      # records seed_A and seed_B; content-addressed, so idempotent
+make ai         # the whole system, replaying what you just recorded
+```
 
-**Acceptance:** diagnosis accuracy ≥ 85% on seed_B · auto-resolve precision ≥ 95%
-· case 10 escalated 100% · false-match rate still 0.0% · 3/3 determinism · cost
-logged and under ₹10 per 80 records.
+Commit `cache/llm_responses.jsonl`. That file is what lets the demo, CI and a
+fresh clone run the full pipeline with no key and no network.
 
-**Tune on seed_A only.** Every published number comes from seed_B.
+**Expect the first run to surface something.** The classifier has never spoken to
+a real model. Likely failure modes: the model answering in prose instead of
+calling `submit_diagnosis` (handled — one nudge, then escalation), not calling
+`subset_sum` at all (it will then have no evidence and should escalate), or
+inflating confidence. All three fail safe, toward escalation. Read
+`docs/metrics.md` after `make ai` and put whatever you find into `FAILURES.md`.
 
-Then M4: README (headline metric in the first ten lines), `docs/architecture.md`
-with the four rubric headings, `FAILURES.md` with a real entry, Streamlit demo,
-five-minute video ending on what could not be solved.
+### 5.2 Tune the gate threshold — on seed_A only
+
+```bash
+python -m src.metrics --seed A --ai --threshold 0.85 --no-markdown
+python -m src.metrics --seed A --ai --threshold 0.95 --no-markdown
+```
+
+Pick a value, set `AUTO_RESOLVE_THRESHOLD` in `config.py`, then report **once**
+on seed_B and do not iterate on what you see. Looking at seed_B while tuning
+destroys the only thing that makes its numbers worth quoting.
+
+### 5.3 Regenerate every published number
+
+```bash
+make metrics && python -m src.metrics --seed B --ai
+```
+
+`docs/metrics.md` and `docs/exceptions.md` are generated; CI fails if a committed
+copy has drifted. Then update the README's headline table and status rows by hand
+— that is the one table that is not auto-generated, and it currently says the AI
+layer is awaiting a cache.
+
+### 5.4 Record the video
+
+`docs/video-script.md` is written with timings and reads off the screen. Under
+five minutes, ends on what could not be solved. Read the numbers off
+`docs/metrics.md` at record time rather than off the script.
+
+### 5.5 Submit
+
+Repo URL, and whatever else the form asks for.
+
+---
+
+## 5a. Environment notes for a local session
+
+- **`make setup` first.** The `.venv` in the working tree was created 3 September
+  and predates the OpenAI dependency swap. `make lint` and `make test` will
+  behave oddly against it.
+- **ruff is pinned exactly** (`ruff==0.16.6`). `make lint` is byte-for-byte what
+  CI runs; `make fmt` applies the formatter. A green local lint means a green
+  build — do not skip it, a formatting miss already broke CI once.
+- **No test may reach the network.** `tests/conftest.py` blanks
+  `OPENAI_API_KEY` for the whole session, so the suite always uses the replay
+  backend even though your `.env` has a real key. `TestTheSuiteIsOffline` asserts
+  it. Do not remove that fixture to "test the live path" — record the cache
+  instead.
+- **Pushing** uses the PAT in `.env`, passed inline so it never lands in
+  `.git/config`:
+  ```bash
+  TOKEN=$(grep -m1 '^GITHUB_TOKEN=' .env | cut -d= -f2-)
+  git push "https://x-access-token:${TOKEN}@github.com/deeepak-17/ledger-sentinel.git" main:main
+  ```
+  From a normal local shell `git push` may just work if you have credentials
+  configured; prefer that.
+- **Secrets are guarded by a test, not by `.gitignore`.**
+  `tests/test_no_secrets.py` scans every tracked file for credential-shaped
+  strings and runs as its own CI step before lint. History was audited: nothing
+  has ever leaked.
 
 ---
 
@@ -310,10 +339,23 @@ five-minute video ending on what could not be solved.
   6/7/9/11 only if Phase 3 finishes with buffer. The enum and the `ACTIVE_CASES`
   switch already accommodate all eleven. `RULE_UTR_ALREADY_CLAIMED` in the
   matcher is the seat reserved for case 11.
-- **Offline-first LLM.** No `ANTHROPIC_API_KEY` in the build environment. The
-  classifier goes behind an interface with a cached-replay backend committed to
-  the repo; live Claude (temp 0, pinned model) is used when a key is present and
-  populates the cache. The demo must never depend on the network.
+- **Offline-first LLM.** The classifier sits behind a backend interface with a
+  cached-replay backend committed to the repo. The live backend (temperature 0,
+  model pinned exactly) is used only when a key is present, and populates the
+  cache. **The demo must never depend on the network** -- CI proves this with a
+  step that runs the pipeline with `OPENAI_API_KEY` blanked.
+- **OpenAI, not Claude.** The plan named Claude for the classifier; the build
+  ships against OpenAI because that was the key available. A dependency swap,
+  not a design change -- neither the tools, the gate nor the metrics know which
+  vendor answered. Stated in the README and `docs/architecture.md` rather than
+  left for a reader to notice.
+- **The gate does not trust stated confidence.** Two deterministic checks run
+  before the threshold: the claimed rows are re-summed against the credit, and
+  two disjoint complete settlement batches veto any confidence. This makes "the
+  collision is never auto-resolved" a property of the system rather than a hope
+  about the model -- and it means a rule, not the AI, is what catches the
+  adversarial case. That trade was made deliberately; `docs/video-script.md`
+  says so out loud in the closing minute rather than hiding it.
 - **Forecast layer is cut** under Track A, and the README must say so explicitly
   rather than quietly omitting it.
 
@@ -321,39 +363,41 @@ five-minute video ending on what could not be solved.
 
 ## 7. Immediate actions, highest priority first
 
-1. **Record the cache** (§5.1) -- the only remaining thing that needs a key.
-2. **Push** (§5.2). Twelve commits exist on one laptop.
-3. **Record the video.**
+1. **§5.1 — record the cache.** Everything in M3 is unmeasured until this runs,
+   and this session is the first one able to do it.
+2. **§5.2 — tune on seed_A**, report once on seed_B.
+3. **§5.4 — record the video.**
+4. Revoke the GitHub PAT.
 
-Resolved since the last handoff: the deadline question (repo due 5 Sept 23:59,
-Track A), the README (written), and the assumption citations (T+2 working days
-and 18% GST verified; the UPI zero-rating turned out to be a real error, kept
-deliberately and stated in the open -- `FAILURES.md` entry 3).
+Resolved earlier today: the deadline question (Track A, repo due tonight), the
+README, the assumption citations, version control and a remote, CI green, and
+the secret-handling guard.
 
 ---
 
 ## 8. Picking this up cold
 
 ```bash
-cd /Users/deepak/Downloads/Razorpay/ledger-sentinel
-make setup       # uv venv on Python 3.11 + install
-make test        # expect 200 passing
+cd ~/Downloads/Razorpay/ledger-sentinel
+make setup       # required — see 5a
+make test        # expect 207 passing, no key needed
 make lint
 make data        # regenerates both seeds + data/README.md; must produce no diff
-make metrics     # runs the pipeline on seed_B, prints the report, writes docs/metrics.md
+make metrics     # deterministic layer on held-out seed_B
+make demo        # Streamlit
 ```
-
-`make demo` and `make determinism` are wired but will fail until M3 lands — the
-targets exist so the interface is fixed before the code is.
 
 To interrogate a number rather than trust it:
 
 ```bash
 sqlite3 ledger.db "select rule, count(*) from matches group by rule"
-sqlite3 ledger.db "select rule, reason from exceptions"
-sqlite3 ledger.db "select seq, rule, decision, reason from audit where subject_id='BNK00031'"
+sqlite3 ledger.db "select bank_txn_id, rule, reason from exceptions"
+sqlite3 ledger.db "select seq, layer, rule, decision, reason from audit
+                   where subject_id='BNK00031' order by seq"
 ```
 
-Read in this order to understand the system: `data/README.md` (what the problem
-looks like), `src/cases.py` (the taxonomy), §4 above (why it is built this way),
-`src/matcher.py` (the rules), then `data/scenarios.py` (how each case is planted).
+Read in this order to understand the system: `README.md`, `data/README.md` (what
+the problem looks like), `src/cases.py` (the taxonomy), §4 above (why it is built
+this way), `src/matcher.py` then `src/gate.py` (the two sets of rules), then
+`data/scenarios.py` (how each case is planted). `FAILURES.md` is the shortest
+route to understanding what is fragile.
