@@ -1,5 +1,7 @@
 # Ledger Sentinel
 
+[![ci](https://github.com/deeepak-17/ledger-sentinel/actions/workflows/ci.yml/badge.svg)](https://github.com/deeepak-17/ledger-sentinel/actions/workflows/ci.yml)
+
 Three-way settlement reconciliation with a deterministic core and a gated AI
 exception classifier. Built for Razorpay AI Buildathon **Track 04 — AI Finance
 Controller**.
