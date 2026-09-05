@@ -207,8 +207,15 @@ budget bug — was checked rather than assumed, and did not materialise.
   action was to confirm whether the repo was due at application time. It was
   answered on the morning of the deadline. Everything downstream was scheduled
   against a date nobody had checked.
-- **`docs/exceptions.md` and `docs/runbook.md` are not written.** They are in the
-  plan's M4 deliverables and they did not fit.
+- **The classifier's one wrong call is a conservative one.** On seed_B it
+  escalated `BNK00016`, an ordinary batched payout, because `subset_sum` returned
+  a second disjoint reading spanning three unrelated settlement batches. The
+  discriminator it was given — a real consolidated credit is *one* payout, so its
+  rows share a `settlement_id` — was enough to break the tie, and its own
+  reasoning names the winning solution as a complete batch before escalating
+  anyway. That costs match rate, not safety, which is the direction this system
+  is built to fail in. It is the single point between 88.9% and 100% diagnosis
+  accuracy.
 - **Cases 6, 7, 9 and 11 are defined and dormant.** `RULE_UTR_ALREADY_CLAIMED`
   exists in the matcher as the seat reserved for case 11, and has never fired
   against real data.
