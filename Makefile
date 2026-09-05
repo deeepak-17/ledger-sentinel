@@ -1,7 +1,7 @@
 PY := .venv/bin/python
 UV := uv
 
-.PHONY: setup data test lint fmt metrics ai cache demo api determinism clean
+.PHONY: setup data test lint fmt metrics ai models cache demo api determinism clean
 
 setup:                ## create the venv and install everything
 	$(UV) venv --python 3.11 .venv
@@ -28,6 +28,9 @@ metrics:              ## deterministic layer only, on the held-out seed
 
 ai:                   ## the whole system, replaying the committed response cache
 	$(PY) -m src.metrics --seed B --ai
+
+models:               ## which models this key can reach, and is the pin valid
+	$(PY) scripts/models.py
 
 cache:                ## re-record the LLM cache against the live API (needs a key)
 	$(PY) scripts/record_cache.py --seed A --seed B

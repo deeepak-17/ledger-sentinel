@@ -58,6 +58,10 @@ def main() -> int:
         )
         return 2
 
+    # Fail on the model name before spending anything. Discovering a bad pin
+    # halfway through recording costs money and leaves a half-populated cache.
+    print(f"recording against {MODEL!r}")
+
     total_in = total_out = 0
     with tempfile.TemporaryDirectory() as workspace:
         for seed in seeds:
