@@ -33,3 +33,11 @@ jobs:
           python -m data.generator --seed B
           python -m data.generator --readme
           git diff --exit-code -- data/
+
+      # Same discipline for the metrics document: no number in any file in this
+      # repository is typed by hand. If the code and the document disagree, the
+      # document is wrong and the build says so.
+      - name: Metrics document is regenerated, not written
+        run: |
+          python -m src.metrics --seed B
+          git diff --exit-code -- docs/
