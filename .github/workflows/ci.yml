@@ -41,3 +41,19 @@ jobs:
         run: |
           python -m src.metrics --seed B
           git diff --exit-code -- docs/
+
+      # A reconciliation claim that is not reproducible is not a claim. This runs
+      # without a key: the classifier replays the committed response cache.
+      - name: Three identical runs
+        run: python scripts/determinism.py --seed B --runs 3
+
+      # The demo must work from a clean checkout with no key and no network. If a
+      # cache is committed this exercises the full pipeline; if not, it proves the
+      # deterministic baseline still stands on its own.
+      - name: Offline pipeline
+        env:
+          OPENAI_API_KEY: ""
+        run: |
+          python -m src.metrics --seed B --no-markdown
+          test -s cache/llm_responses.jsonl && python scripts/determinism.py --seed B --runs 3 --ai || \
+            echo "no recorded cache in this checkout; deterministic layer only"

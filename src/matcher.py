@@ -53,6 +53,50 @@ RULE_NOT_A_CREDIT = "not_a_credit"
 
 MATCH_RULES = frozenset({RULE_UTR_EXACT, RULE_UTR_WITHIN_ROUNDING})
 
+# What each rule means, in a controller's terms. Kept beside the rules so a new
+# rule cannot be added without saying what it is for, and read by
+# `make exceptions` so the document can never drift from the code.
+RULE_DOCS: dict[str, str] = {
+    RULE_UTR_EXACT: (
+        "The bank reference resolves to a settlement payout whose net equals the "
+        "credit to the paise, dated inside the settlement window. Closed."
+    ),
+    RULE_UTR_WITHIN_ROUNDING: (
+        "As above, but the credit differs by a paise or two because the merchant "
+        "and the gateway rounded the same fee independently. Within tolerance, so "
+        "it is a match and not an exception -- reporting it would be noise."
+    ),
+    RULE_UTR_AMOUNT_MISMATCH: (
+        "The reference agrees and the money does not, by more than rounding. "
+        "Someone has to look: a short payout, a deduction nobody expected, or a "
+        "reference on the wrong credit. The identifier agreeing is not enough."
+    ),
+    RULE_UTR_DATE_OUTSIDE_WINDOW: (
+        "The reference agrees but the credit is dated outside the window the "
+        "payout settled in. Usually a statement export spanning the wrong period; "
+        "occasionally a reference that has been reused."
+    ),
+    RULE_UTR_ALREADY_CLAIMED: (
+        "This reference already closed an earlier credit. A reference that matches "
+        "twice has stopped identifying anything, and the earlier claim does not "
+        "make this credit true."
+    ),
+    RULE_UNKNOWN_UTR: (
+        "The statement carries a reference that appears on no settlement row in "
+        "this cycle. Most often the payout belongs to an earlier export."
+    ),
+    RULE_NO_IDENTIFIER: (
+        "A consolidated payout, which arrives over a rail that carries no "
+        "reference at all. There is nothing to join on, so the deterministic "
+        "layer refuses to guess a combination and hands it to the classifier "
+        "along with the settlement rows still unaccounted for."
+    ),
+    RULE_NOT_A_CREDIT: (
+        "A debit on the statement. The settlement report describes money coming "
+        "in, so this needs a human to classify it."
+    ),
+}
+
 
 @dataclass(frozen=True)
 class Match:

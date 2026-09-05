@@ -50,6 +50,43 @@ RULE_BELOW_THRESHOLD = "below_confidence_threshold"
 RULE_AUTO_RESOLVED = "auto_resolved"
 
 
+RULE_DOCS: dict[str, str] = {
+    RULE_MODEL_ESCALATED: (
+        "The classifier investigated and declined to attribute the credit. Its "
+        "reasoning is attached."
+    ),
+    RULE_NO_ROWS_CLAIMED: (
+        "The classifier said 'matched' but named no settlement rows, so there is "
+        "nothing to book."
+    ),
+    RULE_ARITHMETIC_FAILS: (
+        "The rows the classifier named do not sum to the credit. Re-checked here "
+        "against the same money functions the deterministic matcher uses -- a "
+        "diagnosis that does not survive re-checking is never booked, whatever "
+        "confidence it carries."
+    ),
+    RULE_AMBIGUOUS_EVIDENCE: (
+        "The tools found two complete settlement batches that each explain this "
+        "credit exactly and share no rows. Nothing in the data chooses between "
+        "them, so no stated confidence is high enough. This is derived from the "
+        "evidence rather than from the model's opinion of itself, which is why it "
+        "holds even when the classifier misdiagnoses the case."
+    ),
+    RULE_ALWAYS_ESCALATE: (
+        "The case is on the never-auto-resolve list. On these constructions the "
+        "classifier being confident is itself the failure being guarded against."
+    ),
+    RULE_BELOW_THRESHOLD: (
+        "The classifier was not confident enough to book without review. A low "
+        "number here is a legitimate result, not a failure."
+    ),
+    RULE_AUTO_RESOLVED: (
+        "Diagnosed, re-verified arithmetically, unambiguous, and above the "
+        "confidence threshold. Booked without review."
+    ),
+}
+
+
 @dataclass(frozen=True)
 class Decision:
     bank_txn_id: str
