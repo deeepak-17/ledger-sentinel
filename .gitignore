@@ -39,3 +39,6 @@ service-account*.json
 # Working notes for whoever picks the build up next. Local only -- it is scaffolding
 # for building the thing, not part of the thing, and it has no reader on GitHub.
 HANDOFF.md
+
+# The video script is a recording aid, not a deliverable. The video is.
+docs/video-script.md
