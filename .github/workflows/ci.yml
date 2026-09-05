@@ -10,12 +10,20 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: astral-sh/setup-uv@v3
+      # Python is pinned to 3.11 explicitly. pyproject requires >=3.11,<3.12, and
+      # the runner's default is newer -- an unpinned install would resolve to a
+      # version the project refuses. Plain pip rather than a third-party action:
+      # one less thing that can be yanked out from under a deadline.
+      - uses: actions/setup-python@v5
         with:
-          enable-cache: true
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: pyproject.toml
 
       - name: Install
-        run: uv pip install --system -e ".[dev]"
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e ".[dev]"
 
       # First, and on its own, so a leak is the first thing the log says rather
       # than something buried in a 200-test summary. A secret that reaches a
