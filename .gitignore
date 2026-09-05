@@ -11,6 +11,11 @@ htmlcov/
 ledger.db
 ledger.db-journal
 
+# Secrets. The classifier reads OPENAI_API_KEY from here when it is present;
+# it must never reach the repository.
+.env
+*.key
+
 # macOS
 .DS_Store
 
