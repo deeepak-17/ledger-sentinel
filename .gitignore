@@ -35,3 +35,7 @@ service-account*.json
 # NOTE: data/seed_A/ and data/seed_B/ are deliberately NOT ignored. CI regenerates
 # them and asserts `git diff --exit-code -- data/`, which only works if the
 # committed copies are there to diff against.
+
+# Working notes for whoever picks the build up next. Local only -- it is scaffolding
+# for building the thing, not part of the thing, and it has no reader on GitHub.
+HANDOFF.md

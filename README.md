@@ -290,7 +290,6 @@ classifier and move to Postgres. Not built; stated.
 | [`docs/exceptions.md`](docs/exceptions.md) | every rule that can raise an exception, and what it means |
 | [`docs/runbook.md`](docs/runbook.md) | how to run, regenerate, re-record and debug it |
 | [`FAILURES.md`](FAILURES.md) | seven things that went wrong, and what each one changed |
-| `HANDOFF.md` | full state and build order for whoever picks this up |
 
 ## Layout
 
