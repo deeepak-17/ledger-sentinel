@@ -1,0 +1,35 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v3
+        with:
+          enable-cache: true
+
+      - name: Install
+        run: uv pip install --system -e ".[dev]"
+
+      - name: Lint
+        run: |
+          ruff check .
+          ruff format --check .
+
+      - name: Test
+        run: pytest --cov=src --cov-report=term-missing
+
+      # The dataset is the quality ceiling, so prove it regenerates byte-identically
+      # rather than trusting the committed CSVs.
+      - name: Dataset is reproducible
+        run: |
+          python -m data.generator --seed A
+          python -m data.generator --seed B
+          python -m data.generator --readme
+          git diff --exit-code -- data/

@@ -1,0 +1,19 @@
+# Virtualenvs and caches -- never committed, always reproducible from pyproject.
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# The reconciliation database is a build artefact of `make metrics`.
+ledger.db
+ledger.db-journal
+
+# macOS
+.DS_Store
+
+# NOTE: data/seed_A/ and data/seed_B/ are deliberately NOT ignored. CI regenerates
+# them and asserts `git diff --exit-code -- data/`, which only works if the
+# committed copies are there to diff against.

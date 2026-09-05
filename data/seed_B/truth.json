@@ -1,0 +1,1010 @@
+[
+  {
+    "bank_txn_ids": [
+      "BNK00053"
+    ],
+    "case_id": 1,
+    "expected_resolution": "matched",
+    "note": "gross amount credited in full; no fee on UPI",
+    "order_ids": [
+      "order_hT9JSostQzYUZ5"
+    ],
+    "settlement_ids": [
+      "pay_21TZgSkvseXvyN"
+    ],
+    "truth_id": "T0001"
+  },
+  {
+    "bank_txn_ids": [
+      "BNK00038"
+    ],
+    "case_id": 1,
+    "expected_resolution": "matched",
+    "note": "gross amount credited in full; no fee on UPI",
+    "order_ids": [
+      "order_f2uqFcg6j3hZtp"
+    ],
+    "settlement_ids": [
+      "pay_FGaHJnOcPrCSWe"
+    ],
+    "truth_id": "T0002"
+  },
+  {
+    "bank_txn_ids": [
+      "BNK00054"
+    ],
+    "case_id": 1,
+    "expected_resolution": "matched",
+    "note": "gross amount credited in full; no fee on UPI",
+    "order_ids": [
+      "order_o6L1xM0Vb5V1Pm"
+    ],
+    "settlement_ids": [
+      "pay_kPlPTjngbSUlWP"
+    ],
+    "truth_id": "T0003"
+  },
+  {
+    "bank_txn_ids": [
+      "BNK00005"
+    ],
+    "case_id": 1,
+    "expected_resolution": "matched",
+    "note": "gross amount credited in full; no fee on UPI",
+    "order_ids": [
+      "order_k1rCTpq5uz58Mt"
+    ],
+    "settlement_ids": [
+      "pay_FbU10rY6K154Ta"
+    ],
+    "truth_id": "T0004"
+  },
+  {
+    "bank_txn_ids": [
+      "BNK00017"
+    ],
+    "case_id": 1,
+    "expected_resolution": "matched",
+    "note": "gross amount credited in full; no fee on UPI",
+    "order_ids": [
+      "order_Pq3GCbMi89ucHk"
+    ],
+    "settlement_ids": [
+      "pay_kKp8vwYy1bY4Hc"
+    ],
+    "truth_id": "T0005"
+  },
+  {
+    "bank_txn_ids": [
+      "BNK00006"
+    ],
+    "case_id": 1,
+    "expected_resolution": "matched",
+    "note": "gross amount credited in full; no fee on UPI",
+    "order_ids": [
+      "order_YGRwRk6JoSOE66"
+    ],
+    "settlement_ids": [
+      "pay_2LIahnr6TcNRqY"
+    ],
+    "truth_id": "T0006"
+  },
+  {
+    "bank_txn_ids": [
+      "BNK00039"
+    ],
+    "case_id": 1,
+    "expected_resolution": "matched",
+    "note": "gross amount credited in full; no fee on UPI",
+    "order_ids": [
+      "order_Dq8QHHyeZtsEGr"
+    ],
+    "settlement_ids": [
+      "pay_Kk6cKl4QkFbGFc"
+    ],
+    "truth_id": "T0007"
+  },
+  {
+    "bank_txn_ids": [
+      "BNK00007"
+    ],
+    "case_id": 1,
+    "expected_resolution": "matched",
+    "note": "gross amount credited in full; no fee on UPI",
+    "order_ids": [
+      "order_PPcGiXxMoHGjnf"
+    ],
+    "settlement_ids": [
+      "pay_UkUcsgxpGibhHz"
+    ],
+    "truth_id": "T0008"
+  },
+  {
+    "bank_txn_ids": [
+      "BNK00018"
+    ],
+    "case_id": 1,
+    "expected_resolution": "matched",
+    "note": "gross amount credited in full; no fee on UPI",
+    "order_ids": [
+      "order_WW5soPLGFPI8aO"
+    ],
+    "settlement_ids": [
+      "pay_ecUpu7EsmqtcGh"
+    ],
+    "truth_id": "T0009"
+  },
+  {
+    "bank_txn_ids": [
+      "BNK00019"
+    ],
+    "case_id": 1,
+    "expected_resolution": "matched",
+    "note": "gross amount credited in full; no fee on UPI",
+    "order_ids": [
+      "order_NNT0aSjUQsqdDh"
+    ],
+    "settlement_ids": [
+      "pay_DLH7YGKg4duxop"
+    ],
+    "truth_id": "T0010"
+  },
+  {
+    "bank_txn_ids": [
+      "BNK00032"
+    ],
+    "case_id": 1,
+    "expected_resolution": "matched",
+    "note": "gross amount credited in full; no fee on UPI",
+    "order_ids": [
+      "order_6nZ9gBWA9JS9d7"
+    ],
+    "settlement_ids": [
+      "pay_trZqL3jVD8vqrX"
+    ],
+    "truth_id": "T0011"
+  },
+  {
+    "bank_txn_ids": [
+      "BNK00009"
+    ],
+    "case_id": 1,
+    "expected_resolution": "matched",
+    "note": "gross amount credited in full; no fee on UPI",
+    "order_ids": [
+      "order_9eQRr2Li1wCxtd"
+    ],
+    "settlement_ids": [
+      "pay_Ykjms1lqKgqjrR"
+    ],
+    "truth_id": "T0012"
+  },
+  {
+    "bank_txn_ids": [
+      "BNK00055"
+    ],
+    "case_id": 1,
+    "expected_resolution": "matched",
+    "note": "gross amount credited in full; no fee on UPI",
+    "order_ids": [
+      "order_i14YxMpYrgIlSq"
+    ],
+    "settlement_ids": [
+      "pay_yfqAkwQGSXCQNO"
+    ],
+    "truth_id": "T0013"
+  },
+  {
+    "bank_txn_ids": [
+      "BNK00043"
+    ],
+    "case_id": 1,
+    "expected_resolution": "matched",
+    "note": "gross amount credited in full; no fee on UPI",
+    "order_ids": [
+      "order_9ZMqJD7GpH7Xm4"
+    ],
+    "settlement_ids": [
+      "pay_dMyUE6tW28g104"
+    ],
+    "truth_id": "T0014"
+  },
+  {
+    "bank_txn_ids": [
+      "BNK00040"
+    ],
+    "case_id": 1,
+    "expected_resolution": "matched",
+    "note": "gross amount credited in full; no fee on UPI",
+    "order_ids": [
+      "order_yMzglc4M0sVinI"
+    ],
+    "settlement_ids": [
+      "pay_H08t3o0tR68R1Y"
+    ],
+    "truth_id": "T0015"
+  },
+  {
+    "bank_txn_ids": [
+      "BNK00056"
+    ],
+    "case_id": 1,
+    "expected_resolution": "matched",
+    "note": "gross amount credited in full; no fee on UPI",
+    "order_ids": [
+      "order_78FLhCRgxUf313"
+    ],
+    "settlement_ids": [
+      "pay_2VI6A3lWPI0ghm"
+    ],
+    "truth_id": "T0016"
+  },
+  {
+    "bank_txn_ids": [
+      "BNK00033"
+    ],
+    "case_id": 1,
+    "expected_resolution": "matched",
+    "note": "gross amount credited in full; no fee on UPI",
+    "order_ids": [
+      "order_YjfZQZKcmQwojC"
+    ],
+    "settlement_ids": [
+      "pay_OCHDbNBw0GgPAP"
+    ],
+    "truth_id": "T0017"
+  },
+  {
+    "bank_txn_ids": [
+      "BNK00001"
+    ],
+    "case_id": 1,
+    "expected_resolution": "matched",
+    "note": "gross amount credited in full; no fee on UPI",
+    "order_ids": [
+      "order_eLHuJdq8g72TH2"
+    ],
+    "settlement_ids": [
+      "pay_7YFy8ccqhWs32x"
+    ],
+    "truth_id": "T0018"
+  },
+  {
+    "bank_txn_ids": [
+      "BNK00020"
+    ],
+    "case_id": 2,
+    "expected_resolution": "matched",
+    "note": "short by fee 18366p + GST 3306p",
+    "order_ids": [
+      "order_0SHkHRes4l9dQU"
+    ],
+    "settlement_ids": [
+      "pay_vrJsTX1dnBkVoj"
+    ],
+    "truth_id": "T0019"
+  },
+  {
+    "bank_txn_ids": [
+      "BNK00057"
+    ],
+    "case_id": 2,
+    "expected_resolution": "matched",
+    "note": "short by fee 1002p + GST 180p",
+    "order_ids": [
+      "order_QUK80ZFTu3x9kY"
+    ],
+    "settlement_ids": [
+      "pay_bTSHDjEmuTVUef"
+    ],
+    "truth_id": "T0020"
+  },
+  {
+    "bank_txn_ids": [
+      "BNK00058"
+    ],
+    "case_id": 2,
+    "expected_resolution": "matched",
+    "note": "short by fee 10994p + GST 1979p",
+    "order_ids": [
+      "order_cJK87RMSKngcwe"
+    ],
+    "settlement_ids": [
+      "pay_Qvo2713uUcQeZH"
+    ],
+    "truth_id": "T0021"
+  },
+  {
+    "bank_txn_ids": [
+      "BNK00021"
+    ],
+    "case_id": 2,
+    "expected_resolution": "matched",
+    "note": "short by fee 12008p + GST 2161p",
+    "order_ids": [
+      "order_nojE2UGlXga6dW"
+    ],
+    "settlement_ids": [
+      "pay_cGXKa9dKhy8xZD"
+    ],
+    "truth_id": "T0022"
+  },
+  {
+    "bank_txn_ids": [
+      "BNK00034"
+    ],
+    "case_id": 2,
+    "expected_resolution": "matched",
+    "note": "short by fee 1584p + GST 285p",
+    "order_ids": [
+      "order_sVGcRCI40dZlWm"
+    ],
+    "settlement_ids": [
+      "pay_1ksijMOEH4GSVs"
+    ],
+    "truth_id": "T0023"
+  },
+  {
+    "bank_txn_ids": [
+      "BNK00008"
+    ],
+    "case_id": 2,
+    "expected_resolution": "matched",
+    "note": "short by fee 13056p + GST 2350p",
+    "order_ids": [
+      "order_rDyzoLFcMIgtuo"
+    ],
+    "settlement_ids": [
+      "pay_DZpXruoZ1Uw4M7"
+    ],
+    "truth_id": "T0024"
+  },
+  {
+    "bank_txn_ids": [
+      "BNK00022"
+    ],
+    "case_id": 2,
+    "expected_resolution": "matched",
+    "note": "short by fee 14560p + GST 2621p",
+    "order_ids": [
+      "order_hhnmhDSYYEOtby"
+    ],
+    "settlement_ids": [
+      "pay_QM4XnEfP4Z7PMh"
+    ],
+    "truth_id": "T0025"
+  },
+  {
+    "bank_txn_ids": [
+      "BNK00059"
+    ],
+    "case_id": 2,
+    "expected_resolution": "matched",
+    "note": "short by fee 16914p + GST 3045p",
+    "order_ids": [
+      "order_YBrtRs4kHu5Or6"
+    ],
+    "settlement_ids": [
+      "pay_uASUa2QlJsceHf"
+    ],
+    "truth_id": "T0026"
+  },
+  {
+    "bank_txn_ids": [
+      "BNK00010"
+    ],
+    "case_id": 2,
+    "expected_resolution": "matched",
+    "note": "short by fee 5938p + GST 1069p",
+    "order_ids": [
+      "order_Ic9i1roGspJnYO"
+    ],
+    "settlement_ids": [
+      "pay_vkQkCLPlKSOG4C"
+    ],
+    "truth_id": "T0027"
+  },
+  {
+    "bank_txn_ids": [
+      "BNK00041"
+    ],
+    "case_id": 2,
+    "expected_resolution": "matched",
+    "note": "short by fee 17534p + GST 3156p",
+    "order_ids": [
+      "order_vglIAZ3j7vewrG"
+    ],
+    "settlement_ids": [
+      "pay_V8A9lEg2w3q9Yo"
+    ],
+    "truth_id": "T0028"
+  },
+  {
+    "bank_txn_ids": [
+      "BNK00045"
+    ],
+    "case_id": 2,
+    "expected_resolution": "matched",
+    "note": "short by fee 9588p + GST 1726p",
+    "order_ids": [
+      "order_Xb3lhlpKI3Bwms"
+    ],
+    "settlement_ids": [
+      "pay_JdHy41BWQHoVfa"
+    ],
+    "truth_id": "T0029"
+  },
+  {
+    "bank_txn_ids": [
+      "BNK00011"
+    ],
+    "case_id": 2,
+    "expected_resolution": "matched",
+    "note": "short by fee 7922p + GST 1426p",
+    "order_ids": [
+      "order_seOKY10mtEbC3o"
+    ],
+    "settlement_ids": [
+      "pay_uoDUCfFG8xka0d"
+    ],
+    "truth_id": "T0030"
+  },
+  {
+    "bank_txn_ids": [
+      "BNK00046"
+    ],
+    "case_id": 2,
+    "expected_resolution": "matched",
+    "note": "short by fee 11334p + GST 2040p",
+    "order_ids": [
+      "order_7mmOckENDaFWSJ"
+    ],
+    "settlement_ids": [
+      "pay_xsyJDM7H2UO0oQ"
+    ],
+    "truth_id": "T0031"
+  },
+  {
+    "bank_txn_ids": [
+      "BNK00060"
+    ],
+    "case_id": 2,
+    "expected_resolution": "matched",
+    "note": "short by fee 1102p + GST 198p",
+    "order_ids": [
+      "order_hqST2kQpmkAPrd"
+    ],
+    "settlement_ids": [
+      "pay_WSTvgRgakO05Nq"
+    ],
+    "truth_id": "T0032"
+  },
+  {
+    "bank_txn_ids": [
+      "BNK00012"
+    ],
+    "case_id": 2,
+    "expected_resolution": "matched",
+    "note": "short by fee 2450p + GST 441p",
+    "order_ids": [
+      "order_cfJKS3xZCXqtf0"
+    ],
+    "settlement_ids": [
+      "pay_rtMso1DsiktMDV"
+    ],
+    "truth_id": "T0033"
+  },
+  {
+    "bank_txn_ids": [
+      "BNK00013"
+    ],
+    "case_id": 2,
+    "expected_resolution": "matched",
+    "note": "short by fee 10548p + GST 1899p",
+    "order_ids": [
+      "order_jkI3BO2OfgV6IG"
+    ],
+    "settlement_ids": [
+      "pay_ECHqKs4ZTn8tY6"
+    ],
+    "truth_id": "T0034"
+  },
+  {
+    "bank_txn_ids": [
+      "BNK00023"
+    ],
+    "case_id": 2,
+    "expected_resolution": "matched",
+    "note": "short by fee 14130p + GST 2543p",
+    "order_ids": [
+      "order_FH9oKdD1ifhjsE"
+    ],
+    "settlement_ids": [
+      "pay_UfBIDGxqmG0186"
+    ],
+    "truth_id": "T0035"
+  },
+  {
+    "bank_txn_ids": [
+      "BNK00002"
+    ],
+    "case_id": 2,
+    "expected_resolution": "matched",
+    "note": "short by fee 5174p + GST 931p",
+    "order_ids": [
+      "order_PXOwqAvb0MCk5o"
+    ],
+    "settlement_ids": [
+      "pay_opiJnfO1wWzISg"
+    ],
+    "truth_id": "T0036"
+  },
+  {
+    "bank_txn_ids": [
+      "BNK00042"
+    ],
+    "case_id": 2,
+    "expected_resolution": "matched",
+    "note": "short by fee 3288p + GST 592p",
+    "order_ids": [
+      "order_C2r4GNusewgS24"
+    ],
+    "settlement_ids": [
+      "pay_jY8fpdBUHhuXEc"
+    ],
+    "truth_id": "T0037"
+  },
+  {
+    "bank_txn_ids": [
+      "BNK00003"
+    ],
+    "case_id": 2,
+    "expected_resolution": "matched",
+    "note": "short by fee 6998p + GST 1260p",
+    "order_ids": [
+      "order_r8Sd5xHFtlOCOa"
+    ],
+    "settlement_ids": [
+      "pay_MgGhhx2lmq2bPB"
+    ],
+    "truth_id": "T0038"
+  },
+  {
+    "bank_txn_ids": [
+      "BNK00004"
+    ],
+    "case_id": 2,
+    "expected_resolution": "matched",
+    "note": "short by fee 11396p + GST 2051p",
+    "order_ids": [
+      "order_LkCcxWPQObA4ie"
+    ],
+    "settlement_ids": [
+      "pay_EcPHoI2i1PsIEr"
+    ],
+    "truth_id": "T0039"
+  },
+  {
+    "bank_txn_ids": [
+      "BNK00044"
+    ],
+    "case_id": 2,
+    "expected_resolution": "matched",
+    "note": "short by fee 13778p + GST 2480p",
+    "order_ids": [
+      "order_SzWCr9CAieRYhh"
+    ],
+    "settlement_ids": [
+      "pay_9mtyzlzoQ09bPL"
+    ],
+    "truth_id": "T0040"
+  },
+  {
+    "bank_txn_ids": [
+      "BNK00047"
+    ],
+    "case_id": 3,
+    "expected_resolution": "matched",
+    "note": "credited 4 calendar days after capture across a non-business day",
+    "order_ids": [
+      "order_D7lbQMXwAecjdd"
+    ],
+    "settlement_ids": [
+      "pay_bnhm0PuvTbSzpE"
+    ],
+    "truth_id": "T0041"
+  },
+  {
+    "bank_txn_ids": [
+      "BNK00024"
+    ],
+    "case_id": 3,
+    "expected_resolution": "matched",
+    "note": "credited 4 calendar days after capture across a non-business day",
+    "order_ids": [
+      "order_A5xaiEMYsdPVym"
+    ],
+    "settlement_ids": [
+      "pay_7SEdFOH2Uu81S6"
+    ],
+    "truth_id": "T0042"
+  },
+  {
+    "bank_txn_ids": [
+      "BNK00064"
+    ],
+    "case_id": 3,
+    "expected_resolution": "matched",
+    "note": "credited 4 calendar days after capture across a non-business day",
+    "order_ids": [
+      "order_UbsF1wBxh8Y5kc"
+    ],
+    "settlement_ids": [
+      "pay_vjEbEzKD0BAG4N"
+    ],
+    "truth_id": "T0043"
+  },
+  {
+    "bank_txn_ids": [
+      "BNK00025"
+    ],
+    "case_id": 3,
+    "expected_resolution": "matched",
+    "note": "credited 4 calendar days after capture across a non-business day",
+    "order_ids": [
+      "order_wSG8AqzlznLzXN"
+    ],
+    "settlement_ids": [
+      "pay_UbctiT2j6DkeDt"
+    ],
+    "truth_id": "T0044"
+  },
+  {
+    "bank_txn_ids": [
+      "BNK00061"
+    ],
+    "case_id": 3,
+    "expected_resolution": "matched",
+    "note": "credited 4 calendar days after capture across a non-business day",
+    "order_ids": [
+      "order_4FSumDOI1CakM0"
+    ],
+    "settlement_ids": [
+      "pay_5XheAe14hCu0o9"
+    ],
+    "truth_id": "T0045"
+  },
+  {
+    "bank_txn_ids": [
+      "BNK00026"
+    ],
+    "case_id": 3,
+    "expected_resolution": "matched",
+    "note": "credited 4 calendar days after capture across a non-business day",
+    "order_ids": [
+      "order_bIZyaQIz7viijR"
+    ],
+    "settlement_ids": [
+      "pay_xFUWxMDVOqS6tW"
+    ],
+    "truth_id": "T0046"
+  },
+  {
+    "bank_txn_ids": [
+      "BNK00014"
+    ],
+    "case_id": 3,
+    "expected_resolution": "matched",
+    "note": "credited 4 calendar days after capture across a non-business day",
+    "order_ids": [
+      "order_XWFpGgccwcESuk"
+    ],
+    "settlement_ids": [
+      "pay_ROm9na9cyfGNxn"
+    ],
+    "truth_id": "T0047"
+  },
+  {
+    "bank_txn_ids": [
+      "BNK00027"
+    ],
+    "case_id": 3,
+    "expected_resolution": "matched",
+    "note": "credited 4 calendar days after capture across a non-business day",
+    "order_ids": [
+      "order_49hFGCD9Pdf9uy"
+    ],
+    "settlement_ids": [
+      "pay_JdAeYgM9EuTQIG"
+    ],
+    "truth_id": "T0048"
+  },
+  {
+    "bank_txn_ids": [
+      "BNK00048"
+    ],
+    "case_id": 3,
+    "expected_resolution": "matched",
+    "note": "credited 4 calendar days after capture across a non-business day",
+    "order_ids": [
+      "order_kabuuNOqmidIP5"
+    ],
+    "settlement_ids": [
+      "pay_VPWxQ3Icba9sqt"
+    ],
+    "truth_id": "T0049"
+  },
+  {
+    "bank_txn_ids": [
+      "BNK00065"
+    ],
+    "case_id": 3,
+    "expected_resolution": "matched",
+    "note": "credited 4 calendar days after capture across a non-business day",
+    "order_ids": [
+      "order_28QJ4Cs2DMqZkv"
+    ],
+    "settlement_ids": [
+      "pay_dvA2uC7KRhlxqR"
+    ],
+    "truth_id": "T0050"
+  },
+  {
+    "bank_txn_ids": [
+      "BNK00028"
+    ],
+    "case_id": 8,
+    "expected_resolution": "matched",
+    "note": "bank credit differs from computed net by 2p",
+    "order_ids": [
+      "order_NmSaBjqOcol1Jz"
+    ],
+    "settlement_ids": [
+      "pay_9a0tupemOfdaZs"
+    ],
+    "truth_id": "T0051"
+  },
+  {
+    "bank_txn_ids": [
+      "BNK00062"
+    ],
+    "case_id": 8,
+    "expected_resolution": "matched",
+    "note": "bank credit differs from computed net by 1p",
+    "order_ids": [
+      "order_uRfN2SUS2OtGXj"
+    ],
+    "settlement_ids": [
+      "pay_pWLSdEI3RqHVUf"
+    ],
+    "truth_id": "T0052"
+  },
+  {
+    "bank_txn_ids": [
+      "BNK00049"
+    ],
+    "case_id": 8,
+    "expected_resolution": "matched",
+    "note": "bank credit differs from computed net by -1p",
+    "order_ids": [
+      "order_ur8RmMXrisK3zj"
+    ],
+    "settlement_ids": [
+      "pay_9S4sSidpK6OyYu"
+    ],
+    "truth_id": "T0053"
+  },
+  {
+    "bank_txn_ids": [
+      "BNK00050"
+    ],
+    "case_id": 8,
+    "expected_resolution": "matched",
+    "note": "bank credit differs from computed net by -2p",
+    "order_ids": [
+      "order_0OwxnDoEVr5xYu"
+    ],
+    "settlement_ids": [
+      "pay_viOFpvD6L3v5Z5"
+    ],
+    "truth_id": "T0054"
+  },
+  {
+    "bank_txn_ids": [
+      "BNK00035"
+    ],
+    "case_id": 8,
+    "expected_resolution": "matched",
+    "note": "bank credit differs from computed net by 2p",
+    "order_ids": [
+      "order_6vrfDl2khvbVPM"
+    ],
+    "settlement_ids": [
+      "pay_sqKL3kb9RHJSnj"
+    ],
+    "truth_id": "T0055"
+  },
+  {
+    "bank_txn_ids": [
+      "BNK00051"
+    ],
+    "case_id": 8,
+    "expected_resolution": "matched",
+    "note": "bank credit differs from computed net by 1p",
+    "order_ids": [
+      "order_s5hOsmxJ8Aupj1"
+    ],
+    "settlement_ids": [
+      "pay_9eFOFHVzBYKE5j"
+    ],
+    "truth_id": "T0056"
+  },
+  {
+    "bank_txn_ids": [
+      "BNK00052"
+    ],
+    "case_id": 4,
+    "expected_resolution": "matched",
+    "note": "3 settlements paid out as one consolidated credit with no UTR",
+    "order_ids": [
+      "order_LPYOBA9s5yakT5",
+      "order_y4SWfUuPT3P8s1",
+      "order_ISZ7maXmy76Z2f"
+    ],
+    "settlement_ids": [
+      "pay_2806lXV2YGwBnC",
+      "pay_r7iIRxB44MCyz4",
+      "pay_qdYwZjxc7KeFwz"
+    ],
+    "truth_id": "T0057"
+  },
+  {
+    "bank_txn_ids": [
+      "BNK00029"
+    ],
+    "case_id": 4,
+    "expected_resolution": "matched",
+    "note": "3 settlements paid out as one consolidated credit with no UTR",
+    "order_ids": [
+      "order_BQzRnVvRz4pt38",
+      "order_3WyBJkIzmKGLoy",
+      "order_SvS15ilbCmyxz1"
+    ],
+    "settlement_ids": [
+      "pay_9lht52y0bEbC9p",
+      "pay_yFEG7KLRinqxKR",
+      "pay_Y9M7X1BQUlSljH"
+    ],
+    "truth_id": "T0058"
+  },
+  {
+    "bank_txn_ids": [
+      "BNK00036"
+    ],
+    "case_id": 4,
+    "expected_resolution": "matched",
+    "note": "3 settlements paid out as one consolidated credit with no UTR",
+    "order_ids": [
+      "order_IcAlmhGytnF8YO",
+      "order_YvWiTtnFC38nWO",
+      "order_7sM1covhthpkp6"
+    ],
+    "settlement_ids": [
+      "pay_Y3DlffcpWrRHFd",
+      "pay_ecE8u0RknQjs4T",
+      "pay_6TgrrTrmtSObqo"
+    ],
+    "truth_id": "T0059"
+  },
+  {
+    "bank_txn_ids": [
+      "BNK00015"
+    ],
+    "case_id": 4,
+    "expected_resolution": "matched",
+    "note": "3 settlements paid out as one consolidated credit with no UTR",
+    "order_ids": [
+      "order_4M9vaJzpU4iwum",
+      "order_UDvlpCRwF0Kf55",
+      "order_UbqQijYGXI1MVm"
+    ],
+    "settlement_ids": [
+      "pay_R67FnyfpPM6hUH",
+      "pay_1HpHPa2J9bJdKn",
+      "pay_XgdV5DyNS1vlk6"
+    ],
+    "truth_id": "T0060"
+  },
+  {
+    "bank_txn_ids": [
+      "BNK00030"
+    ],
+    "case_id": 5,
+    "expected_resolution": "matched",
+    "note": "refund of order_4vfvFXomAb1XYx netted into the payout; fee 494p + GST 89p not returned",
+    "order_ids": [
+      "order_hbtMt3T6mWRJE9",
+      "order_4vfvFXomAb1XYx"
+    ],
+    "settlement_ids": [
+      "pay_4q3XIsNNdzAyHi",
+      "pay_hgnsl13W37ydjh",
+      "rfnd_Azf3hw1zLQYLAE"
+    ],
+    "truth_id": "T0061"
+  },
+  {
+    "bank_txn_ids": [
+      "BNK00063"
+    ],
+    "case_id": 5,
+    "expected_resolution": "matched",
+    "note": "refund of order_5F55q3N0dkR4VG netted into the payout; fee 436p + GST 78p not returned",
+    "order_ids": [
+      "order_jM7HAX5POLiEdy",
+      "order_5F55q3N0dkR4VG"
+    ],
+    "settlement_ids": [
+      "pay_FnlI2eVRgS3mHr",
+      "pay_gtsTiVR9zINfal",
+      "rfnd_zUEQ5LZnPeJH5z"
+    ],
+    "truth_id": "T0062"
+  },
+  {
+    "bank_txn_ids": [
+      "BNK00016"
+    ],
+    "case_id": 5,
+    "expected_resolution": "matched",
+    "note": "refund of order_7Z9ijcb2qBWTmW netted into the payout; fee 764p + GST 138p not returned",
+    "order_ids": [
+      "order_6PjGudrR25eb4R",
+      "order_7Z9ijcb2qBWTmW"
+    ],
+    "settlement_ids": [
+      "pay_ivMAmj4hKdgXtL",
+      "pay_kHdb2dvEhWIt80",
+      "rfnd_N7UbgWhwlFXkA9"
+    ],
+    "truth_id": "T0063"
+  },
+  {
+    "bank_txn_ids": [
+      "BNK00037"
+    ],
+    "case_id": 10,
+    "expected_resolution": "escalate",
+    "note": "credit equals both (a+b) and c exactly and nothing in the data distinguishes them; truth is a+b, c settled outside this export",
+    "order_ids": [
+      "order_FxrLW54WSwZbSo",
+      "order_NcKhcSalpXKe4P",
+      "order_WKfjW6Nensc6Yp"
+    ],
+    "settlement_ids": [
+      "pay_rWuWglCeUwYRjT",
+      "pay_ZN6rlrXtxememK",
+      "pay_JNWDKtCFyTPhr6"
+    ],
+    "truth_id": "T0064"
+  },
+  {
+    "bank_txn_ids": [
+      "BNK00031"
+    ],
+    "case_id": 10,
+    "expected_resolution": "escalate",
+    "note": "credit equals both (a+b) and c exactly and nothing in the data distinguishes them; truth is a+b, c settled outside this export",
+    "order_ids": [
+      "order_RkY74NTqYCqsPf",
+      "order_mT9cyiIcrt0wWt",
+      "order_XcHt2wHxhnbTQg"
+    ],
+    "settlement_ids": [
+      "pay_eQXDzBLgfzE4tK",
+      "pay_nBpUsMIAOC3Gu2",
+      "pay_dLrIKwC8UgVTFq"
+    ],
+    "truth_id": "T0065"
+  }
+]
