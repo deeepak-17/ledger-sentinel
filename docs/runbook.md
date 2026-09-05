@@ -39,12 +39,31 @@ serve a stale answer — it raises `CacheMiss`.
 
 ```bash
 printf 'OPENAI_API_KEY=sk-...\n' > .env      # gitignored; never commit it
-python scripts/record_cache.py --dry-run     # what is already covered
-make cache                                   # records seed_A and seed_B
+make models                                  # is the pinned model reachable?
+python scripts/record_cache.py --dry-run     # what it would cost, spends nothing
+make cache                                   # records both seeds, asks before spending
 git add cache/llm_responses.jsonl && git commit
 ```
 
+`make cache` prints the exception count, the call count, the estimated tokens
+and an estimated rupee cost, then waits for confirmation. Pass `--yes` to skip
+the prompt; it is required when stdin is not a terminal, so a CI job or a script
+can never start spending by accident.
+
+The estimate uses `[assumed]` pricing from `config.py`, which was never checked
+against a live price list. **The run reports actual token counts when it
+finishes** — if those disagree badly with the estimate, correct the constants in
+`config.py` rather than trusting the estimate again.
+
 Content-addressed, so re-running costs nothing for prompts already recorded.
+
+A mini-class model is pinned on purpose. The gate re-verifies the arithmetic and
+vetoes ambiguous evidence *before* confidence is consulted, so the false-match
+rate does not depend on how clever the model is — a weaker model degrades
+diagnosis accuracy, which is measured and published, and cannot degrade the
+number this project leads with. If accuracy comes out poor, that is a finding for
+`FAILURES.md`, not automatically a reason to spend more.
+
 Record **both** seeds — discovering mid-demo that only the seed you were not
 going to show is covered is an avoidable way to lose.
 

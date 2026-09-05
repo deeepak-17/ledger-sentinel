@@ -101,7 +101,18 @@ ALWAYS_ESCALATE_CASES: Final[frozenset[int]] = frozenset({10, 11})
 # classifier sits behind a backend interface and neither the tools, the gate nor
 # the metrics know which vendor answered. Pinned exactly, because "the latest
 # model" is not a reproducible experiment.
-MODEL: Final[str] = os.environ.get("LEDGER_SENTINEL_MODEL", "gpt-5.1")
+#
+# A mini-class model is pinned deliberately, and not only for cost. The gate
+# re-verifies the arithmetic and vetoes ambiguous evidence BEFORE confidence is
+# consulted, so the false-match rate does not depend on how clever the model is.
+# A weaker model degrades diagnosis accuracy, which is measured and reported --
+# it cannot degrade safety, which is the number this project leads with. If the
+# accuracy turns out poor, that is a finding worth publishing rather than a
+# reason to spend more.
+#
+# Override without editing code:  echo 'LEDGER_SENTINEL_MODEL=<id>' >> .env
+# `make models` lists what a key can actually reach and checks this pin.
+MODEL: Final[str] = os.environ.get("LEDGER_SENTINEL_MODEL", "gpt-5-mini")
 TEMPERATURE: Final[float] = 0.0
 MAX_TOKENS: Final[int] = 2048
 
@@ -110,10 +121,13 @@ MAX_TOKENS: Final[int] = 2048
 # converging, and an escalation is the honest outcome.
 MAX_TOOL_TURNS: Final[int] = 8
 
-# Rupees per million tokens, used only to print a cost line in `make metrics`.
-# [assumed] list pricing at time of build; see README for the source.
-COST_INR_PER_MTOK_INPUT: Final[float] = 106.0
-COST_INR_PER_MTOK_OUTPUT: Final[float] = 850.0
+# Rupees per million tokens, used only to print a cost line in `make metrics`
+# and a spend estimate before `make cache` runs.
+# [assumed] mini-class list pricing; NOT verified against a live price list --
+# the build environment had no network. Correct these against OpenAI's pricing
+# page once a real run reports actual token counts.
+COST_INR_PER_MTOK_INPUT: Final[float] = 22.0
+COST_INR_PER_MTOK_OUTPUT: Final[float] = 176.0
 
 # --------------------------------------------------------------------------
 # Deterministic guardrail on the AI layer

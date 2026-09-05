@@ -26,6 +26,40 @@ from src.llm import load_env  # noqa: E402
 
 FAMILIES = ("gpt-5", "gpt-4.1", "gpt-4o", "o4", "o3")
 
+# Preference order for an automatic suggestion, cheapest-capable first. This
+# project pins a mini-class model on purpose -- see the note in config.py.
+# Anything matching an entry here is a chat model that supports tool calling.
+PREFERRED = (
+    "gpt-5-mini",
+    "gpt-5.1-mini",
+    "gpt-4.1-mini",
+    "gpt-5-nano",
+    "gpt-4o-mini",
+    "gpt-5",
+    "gpt-4.1",
+)
+
+# Never suggest these even if they match a family prefix -- they are not chat
+# completion models and would fail at the first tool call.
+EXCLUDE_MARKERS = ("audio", "realtime", "transcribe", "tts", "image", "search", "embedding")
+
+
+def suggest(ids: list[str]) -> str | None:
+    """Pick the cheapest capable model this key can see.
+
+    Exact matches first, then dated variants (`gpt-5-mini-2026-01-01`), so a
+    pin lands on the stable alias when one exists.
+    """
+    usable = [i for i in ids if not any(marker in i for marker in EXCLUDE_MARKERS)]
+    for name in PREFERRED:
+        if name in usable:
+            return name
+    for name in PREFERRED:
+        dated = sorted(i for i in usable if i.startswith(f"{name}-"))
+        if dated:
+            return dated[-1]
+    return None
+
 
 def main() -> int:
     load_env()
@@ -56,12 +90,17 @@ def main() -> int:
     if MODEL in ids:
         print(f"config.py pins {MODEL!r} -- available. Nothing to change.")
         return 0
-    print(
-        f"config.py pins {MODEL!r}, which this key CANNOT see.\n"
-        "Pick one from the list above and set it either in config.py or, without\n"
-        "editing anything, as an environment variable:\n\n"
-        "    echo 'LEDGER_SENTINEL_MODEL=<id>' >> .env\n"
-    )
+
+    print(f"config.py pins {MODEL!r}, which this key CANNOT see.")
+    choice = suggest(ids)
+    if choice is None:
+        print("\nNo obviously suitable chat model in the list. Pick one yourself:\n")
+        print("    echo 'LEDGER_SENTINEL_MODEL=<id>' >> .env\n")
+        return 3
+    print(f"\nCheapest capable model this key can reach: {choice}")
+    print("Pin it without editing any code by running exactly this:\n")
+    print(f"    echo 'LEDGER_SENTINEL_MODEL={choice}' >> .env\n")
+    print("Then `make models` again to confirm, and `make cache` to record.")
     return 3
 
 

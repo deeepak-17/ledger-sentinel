@@ -245,21 +245,28 @@ make setup      # .venv on disk predates the OpenAI dependency; recreate it
 make models     # what this key can see, and whether the pin is valid
 ```
 
-**`config.py` pins `MODEL = "gpt-5.1"`, which is an unverified guess.** The
-previous session had no network and could not check it. `make models` prints the
-chat models the key can actually reach and says whether the pin is among them. If
-it is not, override without touching code:
+**`config.py` pins `MODEL = "gpt-5-mini"`, which is an unverified guess** — the
+previous session had no network to check it. `make models` lists what the key can
+actually reach, says whether the pin is valid, and if it is not, prints the exact
+one-line command to pin the cheapest capable model without editing any code.
+
+A mini-class model is deliberate, not just thrift: the gate re-verifies the
+arithmetic and vetoes ambiguous evidence before confidence is consulted, so a
+weaker model degrades **diagnosis accuracy** — which is measured and published —
+and cannot degrade the false-match rate, which is what this project leads with.
+Poor accuracy is a finding for `FAILURES.md`, not automatically a reason to
+upgrade.
 
 ```bash
-echo 'LEDGER_SENTINEL_MODEL=<id>' >> .env
-```
-
-Then:
-
-```bash
-make cache      # records seed_A and seed_B; content-addressed, so idempotent
+make cache      # asks before spending; ~54 calls, ~Rs 6 estimated
 make ai         # the whole system, replaying what you just recorded
 ```
+
+`make cache` prints its estimate and waits for confirmation. It refuses to run
+non-interactively without `--yes`, so nothing can start spending by accident. The
+run reports **actual** token counts at the end — if they disagree badly with the
+estimate, the constants to fix are `COST_INR_PER_MTOK_*` in `config.py` and
+`EST_*_TOKENS_PER_EXCEPTION` in `scripts/record_cache.py`.
 
 Commit `cache/llm_responses.jsonl`. That file is what lets the demo, CI and a
 fresh clone run the full pipeline with no key and no network.

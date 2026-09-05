@@ -26,8 +26,39 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from config import COST_INR_PER_MTOK_INPUT, COST_INR_PER_MTOK_OUTPUT, MODEL  # noqa: E402
+from src.ingest import load_dataset  # noqa: E402
 from src.llm import CACHE_PATH, LiveBackend, ResponseCache, load_env  # noqa: E402
-from src.pipeline import run_reconciliation  # noqa: E402
+from src.matcher import reconcile  # noqa: E402
+from src.pipeline import run_reconciliation, seed_dir  # noqa: E402
+
+# Measured, not guessed. The conversations were simulated offline against both
+# seeds and the payloads counted: a three-turn investigation sends roughly
+# 7.3k + 11.0k + 12.1k characters as tool results accumulate, and answers with
+# a short tool call each time. Converted at ~3.6 chars per token.
+#
+# This is an ESTIMATE shown before spending, not a measurement of the run. The
+# run reports its actual token counts when it finishes, and if the two disagree
+# badly, these constants are what to correct.
+EST_INPUT_TOKENS_PER_EXCEPTION = 8_500
+EST_OUTPUT_TOKENS_PER_EXCEPTION = 750
+
+
+def estimate(seeds: list[str]) -> tuple[int, int, int, float]:
+    """How many exceptions, calls and tokens a recording would cost.
+
+    Runs the deterministic layer only, which is free and offline, and counts
+    what it hands to the classifier.
+    """
+    exceptions = 0
+    for seed in seeds:
+        dataset = load_dataset(seed_dir(seed), seed=seed, with_truth=False)
+        exceptions += len(reconcile(dataset).exceptions)
+    tokens_in = exceptions * EST_INPUT_TOKENS_PER_EXCEPTION
+    tokens_out = exceptions * EST_OUTPUT_TOKENS_PER_EXCEPTION
+    rupees = (
+        tokens_in * COST_INR_PER_MTOK_INPUT + tokens_out * COST_INR_PER_MTOK_OUTPUT
+    ) / 1_000_000
+    return exceptions, tokens_in, tokens_out, rupees
 
 
 def main() -> int:
@@ -38,6 +69,12 @@ def main() -> int:
         action="store_true",
         help="report what is already cached and make no API calls",
     )
+    parser.add_argument(
+        "-y",
+        "--yes",
+        action="store_true",
+        help="skip the spend confirmation (required when stdin is not a terminal)",
+    )
     args = parser.parse_args()
     seeds = args.seeds or ["A", "B"]
 
@@ -45,6 +82,17 @@ def main() -> int:
     cache = ResponseCache()
     before = len(cache)
     print(f"cache at {CACHE_PATH} holds {before} response(s)")
+
+    exceptions, tokens_in, tokens_out, rupees = estimate(seeds)
+    print(
+        f"\nwould classify {exceptions} exception(s) across seed(s) "
+        f"{', '.join(seeds)} using {MODEL!r}\n"
+        f"  estimated ~{exceptions * 3} API calls, "
+        f"~{tokens_in:,} input + ~{tokens_out:,} output tokens\n"
+        f"  estimated cost ~Rs {rupees:.2f}  "
+        f"[assumed pricing -- see config.py; the run reports actuals]\n"
+        "  content-addressed, so anything already cached is free\n"
+    )
 
     if args.dry_run:
         return 0
@@ -58,9 +106,13 @@ def main() -> int:
         )
         return 2
 
-    # Fail on the model name before spending anything. Discovering a bad pin
-    # halfway through recording costs money and leaves a half-populated cache.
-    print(f"recording against {MODEL!r}")
+    if not args.yes:
+        if not sys.stdin.isatty():
+            print("stdin is not a terminal; pass --yes to record without asking.", file=sys.stderr)
+            return 2
+        if input("proceed? [y/N] ").strip().lower() not in ("y", "yes"):
+            print("nothing recorded")
+            return 0
 
     total_in = total_out = 0
     with tempfile.TemporaryDirectory() as workspace:
