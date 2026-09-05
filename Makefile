@@ -1,7 +1,7 @@
 PY := .venv/bin/python
 UV := uv
 
-.PHONY: setup data test lint metrics ai cache demo api determinism clean
+.PHONY: setup data test lint fmt metrics ai cache demo api determinism clean
 
 setup:                ## create the venv and install everything
 	$(UV) venv --python 3.11 .venv
@@ -15,9 +15,13 @@ data:                 ## regenerate both seed datasets and the distribution tabl
 test:                 ## unit, golden, adversarial, tools, AI-layer and API tests
 	$(PY) -m pytest
 
-lint:
+lint:                 ## exactly what CI runs, so a green local run means a green build
 	$(PY) -m ruff check .
 	$(PY) -m ruff format --check .
+
+fmt:                  ## apply the formatter rather than just complaining about it
+	$(PY) -m ruff format .
+	$(PY) -m ruff check --fix .
 
 metrics:              ## deterministic layer only, on the held-out seed
 	$(PY) -m src.metrics --seed B

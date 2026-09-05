@@ -56,8 +56,7 @@ RULE_DOCS: dict[str, str] = {
         "reasoning is attached."
     ),
     RULE_NO_ROWS_CLAIMED: (
-        "The classifier said 'matched' but named no settlement rows, so there is "
-        "nothing to book."
+        "The classifier said 'matched' but named no settlement rows, so there is nothing to book."
     ),
     RULE_ARITHMETIC_FAILS: (
         "The rows the classifier named do not sum to the credit. Re-checked here "
