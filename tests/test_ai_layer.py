@@ -40,6 +40,27 @@ from src.pipeline import run_classifier, run_reconciliation
 from src.tools import ToolBox
 
 
+class TestTheSuiteIsOffline:
+    """The guard for the guard.
+
+    conftest blanks OPENAI_API_KEY so no test can reach the network on a machine
+    that has a key. This asserts the blanking actually works -- without it the
+    protection is invisible, and a suite that quietly starts spending money
+    fails in the direction nobody notices until the bill arrives.
+    """
+
+    def test_the_default_backend_is_replay(self):
+        from src.llm import ReplayBackend, default_backend
+
+        assert isinstance(default_backend(), ReplayBackend)
+
+    def test_a_live_backend_refuses_to_build_a_client(self):
+        from src.llm import LiveBackend, LLMError
+
+        with pytest.raises(LLMError, match="OPENAI_API_KEY"):
+            LiveBackend().client()
+
+
 def tool_call(name: str, **arguments) -> dict:
     return {"id": f"call_{name}", "name": name, "arguments": json.dumps(arguments)}
 

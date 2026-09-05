@@ -21,7 +21,7 @@ from fastapi import FastAPI, HTTPException, Query
 
 from src import db
 from src.ingest import IngestError, load_truth
-from src.llm import CacheMiss
+from src.llm import CacheMiss, LLMError
 from src.metrics import Report, render_markdown, score
 from src.pipeline import RunResult, run_reconciliation, seed_dir
 
@@ -117,6 +117,15 @@ def _run(seed: str, ai: bool) -> RunResult:
             503,
             f"the classifier has no recorded response for this request ({exc}). "
             "Run `make cache` with a key, or call this endpoint with ai=false.",
+        ) from exc
+    except LLMError as exc:
+        # A live call that could not be made. Same 503: the service is fine, the
+        # classifier is temporarily unavailable, and the deterministic layer
+        # still answers on ai=false.
+        raise HTTPException(
+            503,
+            f"the classifier could not be reached ({exc}). The deterministic "
+            "layer is unaffected -- call this endpoint with ai=false.",
         ) from exc
 
 

@@ -194,14 +194,27 @@ class LiveBackend:
                 backend="replay",
             )
 
-        completion = self.client().chat.completions.create(
-            model=self.model,
-            temperature=TEMPERATURE,
-            max_completion_tokens=MAX_TOKENS,
-            messages=messages,
-            tools=tools,
-            tool_choice="auto",
-        )
+        try:
+            client = self.client()
+        except LLMError:
+            raise
+        try:
+            completion = client.chat.completions.create(
+                model=self.model,
+                temperature=TEMPERATURE,
+                max_completion_tokens=MAX_TOKENS,
+                messages=messages,
+                tools=tools,
+                tool_choice="auto",
+            )
+        except Exception as exc:  # noqa: BLE001 -- vendor exceptions vary; the caller
+            # only needs to know the model could not be reached, and every caller
+            # of this treats that as "escalate" rather than "crash".
+            raise LLMError(
+                f"the API call failed ({type(exc).__name__}: {exc}). The recorded "
+                "cache is what the demo runs on; this path is only used when "
+                "re-recording."
+            ) from exc
         choice = completion.choices[0].message
         calls = tuple(
             {
