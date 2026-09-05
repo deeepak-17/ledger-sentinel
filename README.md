@@ -180,8 +180,17 @@ row claimed by exactly one.
 | 8 | Paise rounding drift | deterministic | 6 | 6 |
 | 10 | Amount collision | **escalate** | 2 | 6 |
 
-Cases 6, 7, 9 and 11 are defined in `src/cases.py` and dormant. Turning one on is
-a builder plus an entry in `ACTIVE_CASES` — not a redesign.
+Cases 6, 7 and 9 are defined in `src/cases.py` and dormant. Turning one on is a
+builder plus an entry in `ACTIVE_CASES` — not a redesign.
+
+**Case 11 (a reused bank reference) is implemented and tested, but is not in the
+table above.** `utr_already_claimed` refuses any reference that has already
+closed an earlier credit, because a reference matching twice has stopped
+identifying anything — and booking both is how one payout gets counted as two.
+`tests/test_case11_utr_reuse.py` drives it against a purpose-built dataset;
+disabling the rule fails all five assertions. It is deliberately not planted in
+the seeds: that would change every classifier prompt and invalidate the committed
+response cache, so the published numbers score only what the seeds contain.
 
 ### Why 30% of it has nothing to join on
 

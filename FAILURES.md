@@ -216,7 +216,15 @@ budget bug — was checked rather than assumed, and did not materialise.
   anyway. That costs match rate, not safety, which is the direction this system
   is built to fail in. It is the single point between 88.9% and 100% diagnosis
   accuracy.
-- **Cases 6, 7, 9 and 11 are defined and dormant.** `RULE_UTR_ALREADY_CLAIMED`
-  exists in the matcher as the seat reserved for case 11, and has never fired
-  against real data.
+- **Cases 6, 7 and 9 are defined and dormant.** Turning one on is a builder in
+  `data/scenarios.py` plus an entry in `ACTIVE_CASES`.
+- **Case 11 is implemented and tested, but is not in the reported numbers.**
+  `RULE_UTR_ALREADY_CLAIMED` had been written since M2 and had never executed
+  against any data — a rule that has never fired is a claim, not a feature.
+  `tests/test_case11_utr_reuse.py` now drives it against a purpose-built dataset
+  and asserts the second credit is refused, names the earlier claim, keeps its
+  candidate rows, and never lets one payout be booked twice. Disabling the rule
+  fails all five. It is deliberately *not* planted in seed_A or seed_B: doing so
+  would change every classifier prompt and invalidate the committed response
+  cache, so `docs/metrics.md` still scores only what the seeds contain.
 - **The forecast layer is cut**, not deferred quietly — see the README.
