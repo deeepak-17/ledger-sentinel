@@ -60,6 +60,21 @@ def test_every_tab_is_present(app):
     assert len(app.tabs) == 5
 
 
+def test_the_adversarial_reasoning_is_not_printed_twice(app):
+    """When the gate escalates on the model's own verdict it adopts the model's
+    words as the exception reason, so the card would render the same paragraph
+    twice -- once as the reason and once as the diagnosis. Regression guard."""
+    from src.llm import CACHE_PATH
+
+    if not CACHE_PATH.exists():
+        pytest.skip("the AI layer is off without a recorded cache")
+
+    bodies = [str(block.value) for block in app.markdown]
+    escalation_texts = [b for b in bodies if "two disjoint" in b.lower()]
+    for text in escalation_texts:
+        assert bodies.count(text) == 1, "the same reasoning is rendered more than once"
+
+
 def test_switching_to_the_tuning_seed_still_works():
     at = AppTest.from_file(APP, default_timeout=TIMEOUT).run()
     at.sidebar.radio[1].set_value("A").run()

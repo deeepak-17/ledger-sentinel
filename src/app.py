@@ -256,7 +256,11 @@ def main() -> None:
                             f"{diagnosis.confidence:.2f} confidence, using "
                             f"{', '.join(diagnosis.used_tools)}"
                         )
-                        st.write(diagnosis.reasoning)
+                        # When the gate escalates on the model's own verdict it
+                        # adopts the model's words as the exception reason, so
+                        # these are the same text. Show it once.
+                        if diagnosis.reasoning.strip() != item.reason.strip():
+                            st.write(diagnosis.reasoning)
 
     with tabs[3]:
         st.subheader("Zero unlogged decisions")
